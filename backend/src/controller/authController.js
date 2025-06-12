@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Roles = require('../enums/roles.enum');
 
-const JWT_SECRET = 'MY_JWT_SCRET';
-
 exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 

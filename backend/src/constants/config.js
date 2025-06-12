@@ -1,0 +1,1 @@
+const JWT_SECRET = 'MY_JWT_SCRET';
