@@ -1,0 +1,30 @@
+// Import Bootstrap's default variables
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+// Override the primary color
+$primary: #212529;
+
+// Accordion customization
+.accordion-item {
+    background-color: transparent !important; // Make accordion background transparent
+    border: none; // Remove borders for a cleaner look
+}
+
+.accordion-header {
+    background-color: transparent !important; // Transparent header
+    color: #fff; // White text for better contrast
+}
+
+.accordion-body {
+    background-color: transparent !important; // Transparent body
+    color: #fff; // White text for better contrast
+}
+
+// Navbar customization
+.navbar {
+    background-color: #212529 !important;
+}
+
+// Import the rest of Bootstrap
+@import "bootstrap/scss/bootstrap";
