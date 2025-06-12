@@ -1,23 +1,34 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import HomePage from './pages/HomePage';
-import MovieDetailsPage from './pages/MovieDetailsPage';
-import Login from './components/Login';
-import Register from './components/Register';
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AddMoviePage from './pages/admin/AddMoviePage';
-import MoviesManagement from './pages/admin/MoviesManagement';
-import GenresManagement from './pages/admin/GenresManagement';
-import AdminsManagement from './pages/admin/AdminsManagement';
-import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
 import 'react-toastify/dist/ReactToastify.css';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import Register from './components/Register';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminLogin from './pages/admin/AdminLogin';
+import HomePage from './pages/HomePage';
 
 function App() {
     return (
         <>
-           <p>This is Home Page</p>
+            <ToastContainer position="top-right" autoClose={3000} />
+            <Router>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute role="admin">
+                                <AdminDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                </Routes>
+            </Router>
         </>
     );
 }
