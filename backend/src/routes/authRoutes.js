@@ -14,5 +14,13 @@ const router = express.Router();
  *     tags: [Auth]
  */
 router.post('/register', authController.registerUser);
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ */
+router.post('/login', authController.loginUser);
 
 module.exports = router;
