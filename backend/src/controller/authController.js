@@ -45,3 +45,28 @@ exports.loginUser = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+
+// Admin Login
+exports.loginAdmin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const admin = await User.findOne({ email });
+        if (!admin || admin.role !== Roles.ADMIN) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, admin.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const token = jwt.sign({ id: admin._id, name: admin.name, role: admin.role }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({ message: 'Admin login successful', token, role: admin.role, id: admin._id, name: admin.name, });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
