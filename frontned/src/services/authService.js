@@ -13,6 +13,6 @@ export const loginUser = async (credentials) => {
 
 // Admin login
 export const loginAdmin = async (credentials) => {
-    const response = await axios.post('/auth/admin/login', credentials); // Adjust endpoint as per backend
+    const response = await axios.post('/auth/admin/login', credentials);
     return response.data;
 };
