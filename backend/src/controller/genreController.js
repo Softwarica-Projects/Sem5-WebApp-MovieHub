@@ -24,7 +24,6 @@ class GenreController {
             const basePath = `${req.protocol}://${req.get('host')}`;
             const genres = await this.Genre.find();
 
-            // Add base path to the image URL
             const genresWithBasePath = genres.map(genre => ({
                 ...genre.toObject(),
                 image: genre.image ? `${basePath}${genre.image}` : null,
@@ -45,7 +44,6 @@ class GenreController {
                 return res.status(404).json({ message: 'Genre not found' });
             }
 
-            // Add base path to the image URL
             const genreWithBasePath = {
                 ...genre.toObject(),
                 image: genre.image ? `${basePath}${genre.image}` : null,
