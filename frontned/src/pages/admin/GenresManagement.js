@@ -14,7 +14,6 @@ const GenresManagement = () => {
     const [showModal, setShowModal] = useState(false);
     const [newGenre, setNewGenre] = useState({ name: '', image: null });
 
-    // Fetch genres from the API
     const fetchGenres = async () => {
         const data = await getGenres();
         setGenres(data);

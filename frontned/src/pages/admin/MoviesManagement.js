@@ -23,25 +23,6 @@ const MoviesManagement = () => {
         fetchMovies();
     }, []);
 
-    // const handleCreate = async () => {
-    //     try {
-    //         await createMovie(newMovie);
-    //         setNewMovie({ title: '', description: '', genre: '', releaseDate: '', runtime: '' });
-    //         setShowModal(false); // Close the modal after creating the movie
-    //         fetchMovies(); // Fetch updated data from the API
-    //         handleSuccess('Movie created successfully');
-    //     } catch (ex) {
-    //         handleError(ex, 'Failed to create movie');
-    //     }
-    // };
-    // useEffect(() => {
-    //     const fetchGenres = async () => {
-    //         const data = await getGenres();
-    //         const genreOptions = data.map(g => ({ value: g._id, label: g.name }));
-    //         setGenres(genreOptions);
-    //     };
-    //     fetchGenres();
-    // }, []);
     const handleDelete = async (id) => {
         confirmAlert({
             title: 'Confirm Delete',
