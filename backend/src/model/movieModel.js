@@ -15,7 +15,7 @@ const movieSchema = new mongoose.Schema({
     },
     genre: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Genre', // Reference to the Genre model
+        ref: 'Genre',
         required: true,
     },
     trailerLink: {
