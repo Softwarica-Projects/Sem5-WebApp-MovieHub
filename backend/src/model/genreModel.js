@@ -7,7 +7,7 @@ const genreSchema = new mongoose.Schema({
         unique: true,
     },
     image: {
-        type: String, // Path to the image file
+        type: String,
         default: null,
     },
 });
