@@ -1,8 +1,7 @@
 import axios from '../config/axiosConfig';
 
-// Create a new genre (send as FormData for file upload)
+// Create a new genre
 export const createGenre = async (genreData) => {
-    // genreData should be a FormData object
     const response = await axios.post('/genres', genreData, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -13,13 +12,13 @@ export const createGenre = async (genreData) => {
 
 // Get all genres
 export const getGenres = async () => {
-    const response = await axios.get('/genres'); // Adjusted endpoint if needed
+    const response = await axios.get('/genres');
     return response.data;
 };
 
 // Get a genre by ID
 export const getGenreById = async (id) => {
-    const response = await axios.get(`/genres/${id}`); // Adjusted endpoint if needed
+    const response = await axios.get(`/genres/${id}`);
     return response.data;
 };
 
@@ -35,6 +34,6 @@ export const updateGenre = async (id, genreData) => {
 
 // Delete a genre
 export const deleteGenre = async (id) => {
-    const response = await axios.delete(`/genres/${id}`); // Adjusted endpoint if needed
+    const response = await axios.delete(`/genres/${id}`);
     return response.data;
 };
