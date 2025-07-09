@@ -37,7 +37,7 @@ router.get('/', movieController.getMovies.bind(movieController));
  *       200:
  *         description: Movie details
  */
-router.get('/:id/detail', authenticateToken, movieController.getMovieById.bind(movieController));
+router.get('/:id/detail', movieController.getMovieById.bind(movieController));
 
 /**
  * @swagger

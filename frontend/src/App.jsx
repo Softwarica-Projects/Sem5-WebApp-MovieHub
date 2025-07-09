@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './pages/HomePage';
-import MovieDetailsPage from './pages/MovieDetailsPage';
 import Login from './pages/user/Login';
 import Register from './pages/user/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -12,6 +11,7 @@ import GenresManagement from './pages/admin/GenresManagement';
 import AdminsManagement from './pages/admin/AdminsManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import 'react-toastify/dist/ReactToastify.css';
+import MovieDetail from './pages/MovieDetail';
 
 function App() {
     return (
@@ -20,7 +20,6 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/movie/:id" element={<MovieDetailsPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route
@@ -71,6 +70,7 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                      <Route path="/movies/:id" element={<MovieDetail />} />
                 </Routes>
             </Router>
         </>
