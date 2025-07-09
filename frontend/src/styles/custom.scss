@@ -1,6 +1,10 @@
 @use "bootstrap/scss/bootstrap" as *;
 
-$primary: #212529;
+$primary: #0991B1;
+
+.primary-chip {
+    background-color: $primary;
+}
 
 .accordion-item {
     background-color: transparent !important; 

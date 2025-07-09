@@ -22,7 +22,11 @@ const UserLogin = () => {
             localStorage.setItem('role', response.role);
             localStorage.setItem('name', response.name);
             handleSuccess('User loggedin successful!');
-            navigate('/');
+            if(response.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
             handleError(err);
         }

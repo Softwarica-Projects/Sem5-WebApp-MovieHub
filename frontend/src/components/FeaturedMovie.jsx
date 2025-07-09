@@ -4,7 +4,9 @@ import { getFeaturedMovies } from "../services/movieService";
 
 const FeaturedMovie = () => {
   const [movies, setMovies] = useState([]);
-  const movie = movies[Math.floor(Math.random() * movies.length)];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fadeClass, setFadeClass] = useState('opacity-100');
+  const movie = movies[currentIndex];
 
   useEffect(() => {
     getFeaturedMovies().then((response) => {
@@ -12,8 +14,21 @@ const FeaturedMovie = () => {
     });
   }, []);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (movies.length > 1) {
+      const interval = setInterval(() => {
+        setFadeClass('opacity-0');
+        setTimeout(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % movies.length);
+          setFadeClass('opacity-100');
+        }, 500);
+      }, 5000);
 
+      return () => clearInterval(interval);
+    }
+  }, [movies.length]);
+
+  const navigate = useNavigate();
 
   const ReadMore = (text) => {
     const over = JSON.stringify(text);
@@ -34,13 +49,12 @@ const FeaturedMovie = () => {
   }
 
   const handleClick = () => {
-    navigate(`/${props.genre}/${movie.id}`)
+    navigate(`movies/${movie._id}`)
   }
-
 
   return (
     <div className="w-full h-[50vh] md:h-[500px] text-[#FFFDE3]">
-      <div className="w-full h-full">
+      <div className={`w-full h-full transition-opacity duration-500 ${fadeClass}`}>
         <div className="absolute w-full h-[50vh] md:h-[500px] bg-gradient-to-r from-black">
           {" "}
         </div>
@@ -70,9 +84,25 @@ const FeaturedMovie = () => {
               {movie?.description}
             </ReadMore>
           </p>
-
-
-
+          {movies.length > 1 && (
+            <div className="flex space-x-2 mt-4">
+              {movies.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full cursor-pointer transition-colors duration-300 ${
+                    index === currentIndex ? 'bg-white' : 'bg-gray-500'
+                  }`}
+                  onClick={() => {
+                    setFadeClass('opacity-0');
+                    setTimeout(() => {
+                      setCurrentIndex(index);
+                      setFadeClass('opacity-100');
+                    }, 500);
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import HomePage from './pages/HomePage';
 import MovieDetailsPage from './pages/MovieDetailsPage';
 import Login from './pages/user/Login';
 import Register from './pages/user/Register';
-import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AddMoviePage from './pages/admin/AddMoviePage';
 import MoviesManagement from './pages/admin/MoviesManagement';
@@ -24,7 +23,6 @@ function App() {
                     <Route path="/movie/:id" element={<MovieDetailsPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/admin/login" element={<AdminLogin />} />
                     <Route
                         path="/admin"
                         element={

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
 
-import { useNavigate } from 'react-router-dom';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
-import { FiChevronsRight } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 import Movie from "./Movie";
 
-const MovieRow = ({ title, movies, rowID }) => {
+const MovieRow = ({ title, movies, rowID,showRating=true }) => {
   const navigate = useNavigate();
 
   const slideLeft = () => {
@@ -17,9 +15,6 @@ const MovieRow = ({ title, movies, rowID }) => {
     var slider = document.getElementById('slider' + rowID);
     slider.scrollLeft = slider.scrollLeft + 500;
   };
-  const handleClick = () => {
-    // navigate(`${genre}`)
-  }
 
   return (
     <div>
@@ -35,7 +30,7 @@ const MovieRow = ({ title, movies, rowID }) => {
         <div id={'slider' + rowID} className='w-full h-full overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide relative break-words'>
           {movies.map((item, index) => {
             return (
-              <Movie key={title+`_${index}`} movie={item}></Movie>
+              <Movie key={title+`_${index}`} movie={item} showRating={showRating}></Movie>
             );
           })}
         </div>

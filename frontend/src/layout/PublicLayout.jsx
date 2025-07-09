@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const PublicLayout = ({ children }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
   function handleLogout() {
     localStorage.removeItem('token');
     localStorage.removeItem('id');
@@ -23,15 +24,20 @@ const PublicLayout = ({ children }) => {
         <div><Link to="/movie">
           <button className="text-[#FFFDE3] pr-6">Movies</button>
         </Link>
-          <Link to="/favourites">
-            <button className="text-[#FFFDE3] pr-6">My List</button>
-          </Link>
           {token ? (
             <>
+
+              <Link to="/favourites">
+                <button className="text-[#FFFDE3] pr-6">My List</button>
+              </Link>
               <Link to="/profile">
                 <button className="text-[#FFFDE3] pr-6">Account</button>
               </Link>
-
+              {role == 'admin' &&
+                <Link to="/admin">
+                  <button className="text-[#FFFDE3] pr-6">Admin Panel</button>
+                </Link>
+              }
               <button
                 onClick={handleLogout}
                 className="text-[#FFFDE3] px-6 py-2 rounded cursor-pointer bg-cyan-600 "
