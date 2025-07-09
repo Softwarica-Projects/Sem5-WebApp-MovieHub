@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { AiFillStar } from 'react-icons/ai';
 
 
-const Movie = ({ movie }) => {
+const Movie = ({ movie, showRating = true }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // navigate(`/${props.genre}/${props.item.id}`)
+    navigate(`movies/${movie._id}`)
   }
   return (
     <div className="w-[180px] sm:w-[250px] md:w-[320px] lg:w-[320px] xl:w-[280px] h-[270px] sm:h-[375px] md:h-[480px] lg:h-[480px] xl:h-[420px] inline-block cursor-pointer relative p-4 z-0">
@@ -18,9 +18,23 @@ const Movie = ({ movie }) => {
         onClick={handleClick}
       />
       <div onClick={handleClick} className="absolute top-0 left-0 w-full h-full bg-black/40 hover:opacity-100 text-white px-5">
-        <div className="flex flex-row justify-center items-center absolute top-8 right-8 text-orange-400">
-          <AiFillStar />
-          <p className="text-xs md:text-base font-bold">{movie.averageRating} </p>
+        <div className="absolute top-8 right-8">
+          {showRating ? (
+            <div className="flex flex-row justify-center items-center text-orange-400">
+              <AiFillStar />
+              <p className="text-xs md:text-base font-bold">{movie.averageRating} </p>
+            </div>
+          ) : (
+            <div className="primary-chip px-2 py-1 rounded-full">
+              <p className="text-xs md:text-sm font-medium text-white">
+                {new Date(movie.releaseDate).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                }).replace(/\//g, ' ').replace(/(\d{2}) (\d{2}) (\d{4})/, '$1 $2, $3')}
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex flex-row justify-center items-center absolute bottom-8 left-8 right-8">
           <p className="text-base md:text-lg font-medium truncate">{movie.title}</p>

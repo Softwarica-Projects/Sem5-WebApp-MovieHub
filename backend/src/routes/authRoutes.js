@@ -25,14 +25,14 @@ router.post('/register', authController.registerUser);
  */
 router.post('/login', authController.loginUser);
 
-/**
- * @swagger
- * /auth/admin/login:
- *   post:
- *     summary: Login an admin
- *     tags: [Auth]
- */
-router.post('/admin/login', authController.loginAdmin);
+// /**
+//  * @swagger
+//  * /auth/admin/login:
+//  *   post:
+//  *     summary: Login an admin
+//  *     tags: [Auth]
+//  */
+// router.post('/admin/login', authController.loginAdmin);
 /**
  * @swagger
  * /auth/change-password:

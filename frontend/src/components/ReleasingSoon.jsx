@@ -17,7 +17,7 @@ const ReleasingSoon = () => {
     });
   }, []);
   return (
-    <MovieRow movies={movies} title="Releasing Soon" rowID={"3"}></MovieRow>
+    <MovieRow movies={movies} title="Releasing Soon" rowID={"3"} showRating={false}></MovieRow>
 
   );
 };
