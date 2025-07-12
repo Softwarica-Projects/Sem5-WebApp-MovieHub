@@ -33,7 +33,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/genres', genreRoutes); 
 app.use('/api/general', generalRoutes);
 
-// Error handling middleware (must be after routes)
+// Error handling middleware
 app.use(errorHandler);
 
 // Database connection
