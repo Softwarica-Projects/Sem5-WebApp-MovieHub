@@ -8,6 +8,7 @@ const genreRoutes = require('./routes/genreRoutes');
 const generalRoutes = require('./routes/generalRoutes');
 const cors = require('cors');
 const { swaggerUi, swaggerDocs } = require('./config/swaggerConfig');
+const errorHandler = require('./middlewares/errorHandler');
 const path = require('path');
 require('dotenv').config();
 
@@ -31,6 +32,9 @@ app.use('/api/utility', utilityRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/genres', genreRoutes); 
 app.use('/api/general', generalRoutes);
+
+// Error handling middleware (must be after routes)
+app.use(errorHandler);
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

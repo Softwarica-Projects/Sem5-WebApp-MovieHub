@@ -1,12 +1,10 @@
 const express = require('express');
-const GenreController = require('../controllers/genreController');
-const Genre = require('../models/genreModel');
+const genreController = require('../controllers/genreController');
 const authenticateToken = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const upload = require('../middlewares/uploadMiddleware');
 
 const router = express.Router();
-const genreController = new GenreController(Genre);
 
 /**
  * @swagger
@@ -18,7 +16,7 @@ const genreController = new GenreController(Genre);
  *       200:
  *         description: List of genres
  */
-router.get('/', genreController.getGenres.bind(genreController));
+router.get('/', genreController.getGenres);
 
 /**
  * @swagger
@@ -39,7 +37,7 @@ router.get('/', genreController.getGenres.bind(genreController));
  *       404:
  *         description: Genre not found
  */
-router.get('/:id', genreController.getGenreById.bind(genreController));
+router.get('/:id', genreController.getGenreById);
 
 /**
  * @swagger
@@ -67,7 +65,7 @@ router.get('/:id', genreController.getGenreById.bind(genreController));
  *       500:
  *         description: Server error
  */
-router.post('/', authenticateToken, roleMiddleware('admin'), upload.single('image'), genreController.createGenre.bind(genreController));
+router.post('/', authenticateToken, roleMiddleware('admin'), upload.single('image'), genreController.createGenre);
 
 /**
  * @swagger
@@ -104,7 +102,7 @@ router.post('/', authenticateToken, roleMiddleware('admin'), upload.single('imag
  *       500:
  *         description: Server error
  */
-router.put('/:id', authenticateToken, roleMiddleware('admin'), upload.single('image'), genreController.updateGenre.bind(genreController));
+router.put('/:id', authenticateToken, roleMiddleware('admin'), upload.single('image'), genreController.updateGenre);
 
 /**
  * @swagger
@@ -129,6 +127,6 @@ router.put('/:id', authenticateToken, roleMiddleware('admin'), upload.single('im
  *       500:
  *         description: Server error
  */
-router.delete('/:id', authenticateToken, roleMiddleware('admin'), genreController.deleteGenre.bind(genreController));
+router.delete('/:id', authenticateToken, roleMiddleware('admin'), genreController.deleteGenre);
 
 module.exports = router;

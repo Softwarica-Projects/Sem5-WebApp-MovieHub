@@ -1,88 +1,73 @@
+const GenreService = require('../services/GenreService');
+
 class GenreController {
-    constructor(Genre) {
-        this.Genre = Genre;
+    constructor() {
+        this.genreService = new GenreService();
     }
 
-    async createGenre(req, res) {
+    async createGenre(req, res, next) {
         try {
-            const { name } = req.body;
-            const image = req.file ? `/uploads/${req.file.filename}` : null;
-            
-            const genre = new this.Genre({ name, image });
-            await genre.save();
-
-            res.status(201).json({ message: 'Genre created successfully', genre });
+            res.status(201).json({
+                success: true,
+                message: 'Genre created successfully',
+            });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async getGenres(req, res) {
+    async getGenres(req, res, next) {
         try {
             const basePath = `${req.protocol}://${req.get('host')}`;
-            const genres = await this.Genre.find();
-
-            const genresWithBasePath = genres.map(genre => ({
-                ...genre.toObject(),
-                image: genre.image ? `${basePath}${genre.image}` : null,
-            }));
-
-            res.status(200).json(genresWithBasePath);
+            const genres = await this.genreService.getGenres(basePath);
+            res.status(200).json(genres);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async getGenreById(req, res) {
+    async getGenreById(req, res, next) {
         try {
             const basePath = `${req.protocol}://${req.get('host')}`;
-            const genre = await this.Genre.findById(req.params.id);
-            if (!genre) {
-                return res.status(404).json({ message: 'Genre not found' });
-            }
-            const genreWithBasePath = {
-                ...genre.toObject(),
-                image: genre.image ? `${basePath}${genre.image}` : null,
-            };
-
-            res.status(200).json(genreWithBasePath);
+            const genre = await this.genreService.getGenreById(req.params.id, basePath);
+            res.status(200).json(genre);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async updateGenre(req, res) {
+    async updateGenre(req, res, next) {
         try {
-            const { name } = req.body;
-            const image = req.file ? `/uploads/${req.file.filename}` : undefined;
-
-            const updateData = { name };
-            if (image) {
-                updateData.image = image;
-            }
-
-            const genre = await this.Genre.findByIdAndUpdate(req.params.id, updateData, { new: true });
-            if (!genre) {
-                return res.status(404).json({ message: 'Genre not found' });
-            }
-
-            res.status(200).json({ message: 'Genre updated successfully', genre });
+            const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+            await this.genreService.updateGenre(req.params.id, req.body, imagePath);
+            res.status(200).json({
+                success: true,
+                message: 'Genre updated successfully',
+            });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async deleteGenre(req, res) {
+    async deleteGenre(req, res, next) {
         try {
-            const genre = await this.Genre.findByIdAndDelete(req.params.id);
-            if (!genre) {
-                return res.status(404).json({ message: 'Genre not found' });
-            }
-            res.status(200).json({ message: 'Genre deleted successfully' });
+            const result = await this.genreService.deleteGenre(req.params.id);
+            res.status(200).json({
+                success: true,
+                message: result.message
+            });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 }
 
-module.exports = GenreController;
+const genreController = new GenreController();
+
+module.exports = {
+    createGenre: genreController.createGenre.bind(genreController),
+    getGenres: genreController.getGenres.bind(genreController),
+    getGenreById: genreController.getGenreById.bind(genreController),
+    updateGenre: genreController.updateGenre.bind(genreController),
+    deleteGenre: genreController.deleteGenre.bind(genreController)
+};

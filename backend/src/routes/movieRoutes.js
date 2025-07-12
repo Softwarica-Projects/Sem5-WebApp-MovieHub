@@ -1,12 +1,11 @@
 const express = require('express');
-const MovieController = require('../controllers/movieController');
-const Movie = require('../models/movieModel');
+const movieController = require('../controllers/movieController');
 const authenticateToken = require('../middlewares/authMiddleware');
+const optionalAuthenticateToken = require('../middlewares/optionalAuthMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const upload = require('../middlewares/uploadMiddleware');
 
 const router = express.Router();
-const movieController = new MovieController(Movie);
 
 /**
  * @swagger
@@ -18,7 +17,7 @@ const movieController = new MovieController(Movie);
  *       200:
  *         description: List of movies
  */
-router.get('/', movieController.getMovies.bind(movieController)); 
+router.get('/', movieController.getMovies); 
 
 /**
  * @swagger
@@ -37,7 +36,7 @@ router.get('/', movieController.getMovies.bind(movieController));
  *       200:
  *         description: Movie details
  */
-router.get('/:id/detail', movieController.getMovieById.bind(movieController));
+router.get('/:id/detail', optionalAuthenticateToken, movieController.getMovieById);
 
 /**
  * @swagger
@@ -90,7 +89,7 @@ router.get('/:id/detail', movieController.getMovieById.bind(movieController));
  *       500:
  *         description: Server error
  */
-router.post('/', authenticateToken, roleMiddleware('admin'), upload.single('coverImage'), movieController.createMovie.bind(movieController));
+router.post('/', authenticateToken, roleMiddleware('admin'), upload.single('coverImage'), movieController.createMovie);
 
 /**
  * @swagger
@@ -152,7 +151,7 @@ router.post('/', authenticateToken, roleMiddleware('admin'), upload.single('cove
  *       500:
  *         description: Server error
  */
-router.put('/:id', authenticateToken, roleMiddleware('admin'), upload.single('coverImage'), movieController.updateMovie.bind(movieController));
+router.put('/:id', authenticateToken, roleMiddleware('admin'), upload.single('coverImage'), movieController.updateMovie);
 
 /**
  * @swagger
@@ -179,7 +178,7 @@ router.put('/:id', authenticateToken, roleMiddleware('admin'), upload.single('co
  *       500:
  *         description: Server error
  */
-router.delete('/:id', authenticateToken, roleMiddleware('admin'), movieController.deleteMovie.bind(movieController));
+router.delete('/:id', authenticateToken, roleMiddleware('admin'), movieController.deleteMovie);
 
 /**
  * @swagger
@@ -221,7 +220,7 @@ router.delete('/:id', authenticateToken, roleMiddleware('admin'), movieControlle
  *       500:
  *         description: Server error
  */
-router.post('/:movieId/rate', authenticateToken, movieController.rateMovie.bind(movieController));
+router.post('/:movieId/rate', authenticateToken, movieController.rateMovie);
 
 /**
  * @swagger
@@ -246,7 +245,7 @@ router.post('/:movieId/rate', authenticateToken, movieController.rateMovie.bind(
  *       500:
  *         description: Server error
  */
-router.post('/:movieId/view', authenticateToken, movieController.viewMovie.bind(movieController));
+router.post('/:movieId/view', authenticateToken, movieController.viewMovie);
 
 /**
  * @swagger
@@ -260,7 +259,7 @@ router.post('/:movieId/view', authenticateToken, movieController.viewMovie.bind(
  *       500:
  *         description: Server error
  */
-router.get('/featured-movies', movieController.getFeaturedMovies.bind(movieController));
+router.get('/featured-movies', movieController.getFeaturedMovies);
 
 /**
  * @swagger
@@ -274,7 +273,7 @@ router.get('/featured-movies', movieController.getFeaturedMovies.bind(movieContr
  *       500:
  *         description: Server error
  */
-router.get('/recent', movieController.getRecentlyAddedMovies.bind(movieController));
+router.get('/recent', movieController.getRecentlyAddedMovies);
 
 /**
  * @swagger
@@ -288,7 +287,7 @@ router.get('/recent', movieController.getRecentlyAddedMovies.bind(movieControlle
  *       500:
  *         description: Server error
  */
-router.get('/top-viewed', movieController.getTopViewedMovies.bind(movieController));
+router.get('/top-viewed', movieController.getTopViewedMovies);
 
 /**
  * @swagger
@@ -302,7 +301,7 @@ router.get('/top-viewed', movieController.getTopViewedMovies.bind(movieControlle
  *       500:
  *         description: Server error
  */
-router.get('/soon-releasing', movieController.getSoonReleasingMovies.bind(movieController));
+router.get('/soon-releasing', movieController.getSoonReleasingMovies);
 
 /**
  * @swagger
@@ -327,7 +326,7 @@ router.get('/soon-releasing', movieController.getSoonReleasingMovies.bind(movieC
  *       500:
  *         description: Server error
  */
-router.patch('/:movieId/featured', authenticateToken, roleMiddleware('admin'), movieController.toggleFeatured.bind(movieController));
+router.patch('/:movieId/featured', authenticateToken, roleMiddleware('admin'), movieController.toggleFeatured);
 
 /**
  * @swagger
@@ -359,7 +358,7 @@ router.patch('/:movieId/featured', authenticateToken, roleMiddleware('admin'), m
  *       500:
  *         description: Server error
  */
-router.post('/:movieId/toggle-favorites', authenticateToken, movieController.toggleFavorite.bind(movieController));
+router.post('/:movieId/toggle-favorites', authenticateToken, movieController.toggleFavorite);
 
 /**
  * @swagger
@@ -384,6 +383,6 @@ router.post('/:movieId/toggle-favorites', authenticateToken, movieController.tog
  *       200:
  *         description: List of movies matching the search
  */
-router.get('/search', movieController.searchMovies.bind(movieController));
+router.get('/search', movieController.searchMovies);
 
 module.exports = router;
