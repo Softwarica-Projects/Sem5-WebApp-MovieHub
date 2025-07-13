@@ -20,7 +20,6 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      {/* Sidebar */}
       <div
         style={{
           width: '220px',
@@ -56,9 +55,8 @@ const AdminLayout = ({ children }) => {
         </nav>
       </div>
 
-      {/* Main Content */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Top Navbar */}
+
         <Navbar variant="dark" expand="lg" style={{ backgroundColor: '#212529', flexShrink: 0 }}>
           <Container fluid>
             <Navbar.Brand>{userName || 'Admin Dashboard'}</Navbar.Brand>
@@ -72,8 +70,6 @@ const AdminLayout = ({ children }) => {
             </Nav>
           </Container>
         </Navbar>
-
-        {/* Scrollable Content */}
         <div
           style={{
             flex: 1,

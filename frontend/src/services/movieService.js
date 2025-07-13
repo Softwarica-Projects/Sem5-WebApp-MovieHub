@@ -76,3 +76,8 @@ export const searchMovies = async (searchTerm = '', genreId = '', sortBy = '', o
     const response = await axios.get(`/movies/search?${params.toString()}`);
     return response.data;
 };
+
+export const addMovieRating = async (movieId, ratingData) => {
+    const response = await axios.post(`/movies/${movieId}/rate`, ratingData);
+    return response.data;
+};

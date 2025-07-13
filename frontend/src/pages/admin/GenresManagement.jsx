@@ -125,7 +125,6 @@ const GenresManagement = () => {
                     </tbody>
                 </Table>
 
-                {/* Modal for Adding Genres */}
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Form onSubmit={(e) => {
                         e.preventDefault();

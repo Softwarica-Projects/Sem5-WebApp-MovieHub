@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
-import { getMovieById, toggleFavMovie } from "../services/movieService";
+import { getMovieById, toggleFavMovie, addMovieRating } from "../services/movieService";
 import { IoMdPlay } from "react-icons/io";
 import Youtube from "react-youtube";
 import { AiFillStar } from "react-icons/ai";
@@ -10,12 +10,19 @@ import { getYouTubeVideoId } from "../utils/youtubeVideoHelper";
 import MovieTrailer from "../components/MovieTrailer";
 import { getImageUrl } from '../utils/imageUtils';
 import LoadingBar from "../components/LoadingBar";
+import { handleError, handleSuccess } from "../utils/toastUtils";
 
 const MovieDetail = () => {
     const role = localStorage.getItem("role");
     const [movie, setMovie] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [reviewData, setReviewData] = useState({
+        rating: 0,
+        review: ''
+    });
     const [loading, setLoading] = useState(true);
+    const [submittingReview, setSubmittingReview] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -47,6 +54,31 @@ const MovieDetail = () => {
         }
     }
 
+    const handleReviewSubmit = async () => {
+        if (reviewData.rating === 0) {
+            alert('Please select a rating');
+            return;
+        }
+        setSubmittingReview(true);
+        try {
+            await addMovieRating(id, reviewData);
+            const updatedMovie = await getMovieById(id);
+            setMovie(updatedMovie);
+            setReviewData({ rating: 0, review: '' });
+            setShowReviewModal(false);
+            handleSuccess
+            handleSuccess('Review submitted successfully!');
+        } catch (error) {
+            handleError('Failed to submit review. Please try again.');
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
+
+    const handleStarClick = (rating) => {
+        setReviewData({ ...reviewData, rating });
+    };
+
     if (loading) {
         return (
             <PublicLayout>
@@ -70,6 +102,67 @@ const MovieDetail = () => {
                 <MovieTrailer trailerLink={movie.trailerLink} onClick={() => setShowModal(false)}>
                 </MovieTrailer>
             ) : null}
+
+            {showReviewModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
+                        <h3 className="text-white text-2xl font-bold mb-6">Add Your Review</h3>
+
+                        <div className="mb-6">
+                            <div className="flex items-center space-x-1">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => handleStarClick(star)}
+                                        className="focus:outline-none"
+                                    >
+                                        <AiFillStar
+                                            className={`text-3xl cursor-pointer transition-colors ${star <= reviewData.rating
+                                                    ? 'text-orange-400'
+                                                    : 'text-gray-400 hover:text-orange-300'
+                                                }`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="block text-white text-sm font-medium mb-2">
+                                Review (Optional)
+                            </label>
+                            <textarea
+                                value={reviewData.review}
+                                onChange={(e) => setReviewData({ ...reviewData, review: e.target.value })}
+                                placeholder="Share your thoughts about this movie..."
+                                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                rows="4"
+                            />
+                        </div>
+
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                onClick={() => {
+                                    setShowReviewModal(false);
+                                    setReviewData({ rating: 0, review: '' });
+                                }}
+                                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-medium transition-colors"
+                                disabled={submittingReview}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleReviewSubmit}
+                                disabled={submittingReview || reviewData.rating === 0}
+                                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-md font-medium transition-colors"
+                            >
+                                {submittingReview ? 'Submitting...' : 'Submit Review'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="">
                 <div className="absolute w-full h-[70vh] bg-gradient-to-t from-black ">
@@ -165,7 +258,6 @@ const MovieDetail = () => {
                 </div>
             </div>
 
-            {/* Cast Section */}
             {
                 <div className=" py-12 px-4">
                     <div className="max-w-6xl mx-auto">
@@ -190,6 +282,17 @@ const MovieDetail = () => {
             {
                 <div className="py-12 px-4">
                     <div className="max-w-6xl mx-auto">
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-white text-3xl font-bold">Reviews ({movie.ratings.length})</h2>
+                            {role && (
+                                <button
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                                    onClick={() => setShowReviewModal(true)}
+                                >
+                                    Add Review
+                                </button>
+                            )}
+                        </div>
                         <div className="space-y-6">
                             {movie.ratings.map((rating, index) => (
                                 <div key={index} className="bg-gray-700 rounded-lg p-6">
@@ -209,8 +312,8 @@ const MovieDetail = () => {
                                                         <AiFillStar
                                                             key={starIndex}
                                                             className={`text-sm ${starIndex < rating.rating
-                                                                    ? 'text-orange-400'
-                                                                    : 'text-gray-400'
+                                                                ? 'text-orange-400'
+                                                                : 'text-gray-400'
                                                                 }`}
                                                         />
                                                     ))}
