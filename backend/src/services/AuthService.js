@@ -235,6 +235,15 @@ class AuthService {
         await this.userRepository.removeFromFavorites(userId, movieId);
         return { message: 'Movie removed from favorites' };
     }
+
+    async getUserStats(userId) {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User', userId);
+        }
+
+        return await this.userRepository.getUserStats(userId);
+    }
 }
 
 module.exports = AuthService;
