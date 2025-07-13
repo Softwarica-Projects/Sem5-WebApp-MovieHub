@@ -1,5 +1,5 @@
 const express = require('express');
-const authenticateToken = require('../middlewares/authMiddleware');
+const { authenticateToken } = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const authController = require('../controllers/authController');
 const Roles = require('../enums/roles.enum');

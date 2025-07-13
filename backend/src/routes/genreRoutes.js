@@ -1,6 +1,6 @@
 const express = require('express');
 const genreController = require('../controllers/genreController');
-const authenticateToken = require('../middlewares/authMiddleware');
+const { authenticateToken } = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const upload = require('../middlewares/uploadMiddleware');
 

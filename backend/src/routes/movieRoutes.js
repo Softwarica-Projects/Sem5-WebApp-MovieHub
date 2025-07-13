@@ -1,6 +1,6 @@
 const express = require('express');
 const movieController = require('../controllers/movieController');
-const authenticateToken = require('../middlewares/authMiddleware');
+const { authenticateToken } = require('../middlewares/authMiddleware');
 const optionalAuthenticateToken = require('../middlewares/optionalAuthMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const upload = require('../middlewares/uploadMiddleware');

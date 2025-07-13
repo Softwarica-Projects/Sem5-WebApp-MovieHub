@@ -38,6 +38,13 @@ class AuthService {
         }
     }
 
+    validateUserData(userData) {
+        const { name, email, password } = userData;
+        this.validateName(name);
+        this.validateEmail(email);
+        this.validatePassword(password);
+    }
+
     async registerUser(userData) {
         const { name, email, password } = userData;
         this.validateName(name);
@@ -85,6 +92,7 @@ class AuthService {
         );
 
         return {
+            message: 'Login successful',
             token,
             user: {
                 id: user._id,
@@ -118,6 +126,7 @@ class AuthService {
         );
 
         return {
+            message: 'Admin login successful',
             token,
             user: {
                 id: admin._id,
@@ -181,7 +190,7 @@ class AuthService {
             const normalizedEmail = email.toLowerCase();
             
             if (normalizedEmail !== user.email) {
-                const existingUser = await this.userRepository.findByEmail(normalizedEmail);
+                const existingUser = await this.userRepository.findByEmailExcludingId(normalizedEmail, userId);
                 if (existingUser) {
                     throw new ConflictException('Email already exists');
                 }

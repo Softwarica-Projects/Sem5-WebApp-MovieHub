@@ -106,14 +106,10 @@ class GenreService {
 
     async getGenreByName(name) {
         if (!name || name.trim().length < 1) {
-            throw new ValidationException('Genre name is required', 'name');
+            return null;
         }
 
         const genre = await this.genreRepository.findByName(name.trim());
-        if (!genre) {
-            throw new NotFoundException('Genre', name);
-        }
-
         return genre;
     }
 

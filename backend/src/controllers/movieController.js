@@ -189,18 +189,9 @@ class MovieController {
 
     async searchMovies(req, res, next) {
         try {
-            const { query, genreId } = req.query;
+            const { query, genreId, sortBy, orderBy } = req.query;
             const basePath = `${req.protocol}://${req.get('host')}`;
-
-            let movies;
-            if (genreId) {
-                movies = await this.movieService.getMoviesByGenre(genreId, basePath);
-            } else if (query) {
-                movies = await this.movieService.searchMovies(query, basePath);
-            } else {
-                movies = await this.movieService.getMovies(basePath);
-            }
-
+            const movies = await this.movieService.searchMovies(query, genreId, sortBy, orderBy, basePath);
             res.status(200).json(movies);
         } catch (error) {
             next(error);

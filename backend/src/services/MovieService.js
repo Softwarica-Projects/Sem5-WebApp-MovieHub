@@ -207,12 +207,31 @@ class MovieService {
         return this.formatMoviesWithBasePath(movies, basePath);
     }
 
-    async searchMovies(searchTerm, basePath) {
-        if (!searchTerm || searchTerm.trim().length < 1) {
-            throw new ValidationException('Search term is required', 'searchTerm');
+    async searchMovies(searchTerm, genreId, sortBy, orderBy, basePath) {
+ 
+        if (genreId) {
+            const genre = await this.genreRepository.findById(genreId);
+            if (!genre) {
+                throw new NotFoundException('Genre', genreId);
+            }
+        }
+        const validSortFields = ['rating', 'views', 'name', 'releasedate', 'featured'];
+        if (sortBy && !validSortFields.includes(sortBy.toLowerCase())) {
+            throw new ValidationException('Invalid sortBy parameter. Valid options: rating, views, name, release date, featured', 'sortBy');
         }
 
-        const movies = await this.movieRepository.searchMovies(searchTerm.trim());
+        const validOrderOptions = ['asc', 'desc'];
+        if (orderBy && !validOrderOptions.includes(orderBy.toLowerCase())) {
+            throw new ValidationException('Invalid orderBy parameter. Valid options: asc, desc', 'orderBy');
+        }
+
+        const movies = await this.movieRepository.advancedSearchMovies(
+            searchTerm,
+            genreId,
+            sortBy,
+            orderBy
+        );
+        
         return this.formatMoviesWithBasePath(movies, basePath);
     }
 

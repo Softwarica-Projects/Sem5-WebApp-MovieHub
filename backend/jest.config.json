@@ -1,0 +1,12 @@
+{
+  "testEnvironment": "node",
+  "testMatch": ["**/tests/**/*.test.js"],
+  "collectCoverageFrom": [
+    "src/**/*.js",
+    "!src/app.js",
+    "!src/config/**/*.js",
+    "!src/models/**/*.js"
+  ],
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+  "testTimeout": 30000
+}

@@ -1,7 +1,7 @@
 const express = require('express');
 const AdminController = require('../controllers/adminController');
 const User = require('../models/userModel');
-const authenticateToken = require('../middlewares/authMiddleware');
+const { authenticateToken } = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const Roles = require('../enums/roles.enum');
 

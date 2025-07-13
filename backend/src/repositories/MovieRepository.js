@@ -36,6 +36,56 @@ class MovieRepository extends BaseRepository {
         }, 'genre');
     }
 
+    async advancedSearchMovies(searchTerm, genreId, sortBy, orderBy) {
+        try {
+            const filter = {};
+            
+            if (searchTerm && searchTerm.trim()) {
+                const regex = new RegExp(searchTerm.trim(), 'i');
+                filter.$or = [
+                    { title: regex },
+                    { description: regex }
+                ];
+            }
+            if (genreId) {
+                filter.genre = genreId;
+            }
+            
+            let sort = {};
+            if (sortBy) {
+                let sortOrder = 1;
+                if (orderBy && orderBy.toLowerCase() === 'desc') {
+                    sortOrder = -1;
+                }
+                
+                switch (sortBy.toLowerCase()) {
+                    case 'rating':
+                        sort.averageRating = sortOrder;
+                        break;
+                    case 'views':
+                        sort.views = sortOrder;
+                        break;
+                    case 'name':
+                        sort.title = sortOrder;
+                        break;
+                    case 'releasedate':
+                        sort.releaseDate = sortOrder;
+                        break;
+                    case 'featured':
+                        sort.featured = sortOrder;
+                        break;
+                    default:
+                        sort.createdAt = -1;
+                }
+            } else {
+                sort.title = 1;
+            }
+            return await this.find(filter, 'genre', sort);
+        } catch (error) {
+            throw new ServerException(`Failed to search ${this.model.modelName}s: ${error.message}`);
+        }
+    }
+
     async addRating(movieId, userId, rating, review) {
         return await this.updateById(movieId, {
             $push: {
