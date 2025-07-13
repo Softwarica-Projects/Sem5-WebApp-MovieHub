@@ -52,11 +52,19 @@ export const getRecentlyAdded = async () => {
 export const getPopularMovies = async () => {
     const response = await axios.get('/movies/top-viewed');
     return response.data;
-};export const getReleasingSoonMovies = async () => {
+};
+export const getReleasingSoonMovies = async () => {
     const response = await axios.get('/movies/soon-releasing');
     return response.data;
 };
-
+export const getFavMovies = async () => {
+    const response = await axios.get('/auth/favorites');
+    return response.data;
+};
+export const toggleFavMovie = async (id) => {
+    const response = await axios.post(`/movies/${id}/toggle-favorites`);
+    return response.data;
+};
 export const searchMovies = async (searchTerm = '', genreId = '', sortBy = '', orderBy = '') => {
     const params = new URLSearchParams();
     

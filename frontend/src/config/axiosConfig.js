@@ -24,7 +24,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
-        if (error.response && error.response.status === 403) {
+        if (error.response && (error.response.status === 403|| error.response.status === 401)) {
             const role = localStorage.getItem('role');
             const path = window.location.pathname;
             localStorage.clear();

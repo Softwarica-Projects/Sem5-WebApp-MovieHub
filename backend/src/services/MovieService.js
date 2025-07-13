@@ -341,6 +341,7 @@ class MovieService {
         return {
             ...movieObj,
             coverImage: movieObj.coverImage ? `${basePath}${movieObj.coverImage}` : null,
+            genreId: movieObj.genre ? movieObj.genre._id : null,
             genre: movieObj.genre && typeof movieObj.genre === 'object' ? movieObj.genre.name : movieObj.genre
         };
     }

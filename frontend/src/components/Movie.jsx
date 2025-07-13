@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { AiFillStar } from 'react-icons/ai';
+import { getImageUrl } from '../utils/imageUtils';
 
 
 const Movie = ({ movie, showRating = true }) => {
@@ -13,8 +14,8 @@ const Movie = ({ movie, showRating = true }) => {
     <div className="w-[180px] sm:w-[250px] md:w-[320px] lg:w-[320px] xl:w-[280px] h-[270px] sm:h-[375px] md:h-[480px] lg:h-[480px] xl:h-[420px] inline-block cursor-pointer relative p-4 z-0">
       <img
         className="w-full h-full hover:opacity-50 rounded object-cover"
-        src={movie.coverImage}
-        alt=""
+        src={getImageUrl(movie.coverImage)}
+        alt={movie.title || "Movie poster"}
         onClick={handleClick}
       />
       <div onClick={handleClick} className="absolute top-0 left-0 w-full h-full bg-black/40 hover:opacity-100 text-white px-5">

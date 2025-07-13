@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
-import { getMovieById } from "../services/movieService";
+import { getMovieById, toggleFavMovie } from "../services/movieService";
 import { IoMdPlay } from "react-icons/io";
 import Youtube from "react-youtube";
 import { AiFillStar } from "react-icons/ai";
@@ -8,6 +8,8 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import PublicLayout from "../layout/PublicLayout";
 import { getYouTubeVideoId } from "../utils/youtubeVideoHelper";
 import MovieTrailer from "../components/MovieTrailer";
+import { getImageUrl } from '../utils/imageUtils';
+import LoadingBar from "../components/LoadingBar";
 
 const MovieDetail = () => {
     const role = localStorage.getItem("role");
@@ -21,7 +23,7 @@ const MovieDetail = () => {
         if (id) {
             setLoading(true);
             getMovieById(id).then((response) => {
-                setMovie(response);
+                setMovie();
                 setLoading(false);
             }).catch((error) => {
                 console.error('Error fetching movie:', error);
@@ -31,14 +33,24 @@ const MovieDetail = () => {
     }, [id]);
 
 
-    const onFavClick = () => { }
+    const onFavClick = async () => {
+        try {
+            setMovie({
+                ...movie, isFavourite: !movie.isFavourite
+            });
+            await toggleFavMovie(id);
+
+        } catch {
+            setMovie({
+                ...movie, isFavourite: !movie.isFavourite
+            });
+        }
+    }
 
     if (loading) {
         return (
             <PublicLayout>
-                <div className="flex justify-center items-center h-screen">
-                    <div className="w-16 h-16 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
+                <LoadingBar />
             </PublicLayout>
         );
     }
@@ -77,8 +89,8 @@ const MovieDetail = () => {
                     }}
                 /> :
                     <img
-                        src={movie.coverImage}
-                        alt=""
+                        src={getImageUrl(movie.coverImage)}
+                        alt={movie.title || "Movie poster"}
                         className="w-full h-[70vh] object-cover "
                     />}
             </div>
@@ -87,7 +99,7 @@ const MovieDetail = () => {
                     <div className="lg:w-[30%] h-auto md:h-[400px] w-[70%]">
                         <img
                             className="w-full h-full object-cover rounded-md"
-                            src={movie.coverImage}
+                            src={getImageUrl(movie.coverImage)}
                             alt=""
                         />
                     </div>
@@ -142,7 +154,7 @@ const MovieDetail = () => {
                             </button>}
                             {role && <p onClick={onFavClick} className=" cursor-pointer">
                                 {movie.isFavourite ? (
-                                    <FaHeart className="text-gray-300 text-2xl ml-6 mb-8 md:mb-0" />
+                                    <FaHeart className="text-pink-300 text-2xl ml-6 mb-8 md:mb-0" />
                                 ) : (
                                     <FaRegHeart className="text-gray-300 text-2xl ml-6 mb-8 md:mb-0" />
                                 )}

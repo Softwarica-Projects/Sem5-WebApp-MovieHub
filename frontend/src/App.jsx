@@ -13,6 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import 'react-toastify/dist/ReactToastify.css';
 import MovieDetail from './pages/MovieDetail';
 import MoviePage from './pages/MoviePage';
+import FavMoviePage from './pages/FavMoviePage';
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/movies/:id" element={<MovieDetail />} />
                     <Route path="/movies" element={<MoviePage />} />
+                      <Route path="/favourites" element={<FavMoviePage />} />
                     {/* [Admin] */}
                     <Route
                         path="/admin"
