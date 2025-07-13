@@ -5,6 +5,7 @@ import { getMovies, searchMovies } from "../services/movieService";
 import { getGenres } from "../services/genreService";
 import Movie from "../components/Movie";
 import PublicLayout from "../layout/PublicLayout";
+import LoadingBar from "../components/LoadingBar";
 
 const MoviePage = () => {
     const [movies, setMovies] = useState([]);
@@ -153,9 +154,7 @@ const MoviePage = () => {
 
                 <div className="items-center ml-2 group">
                     {loading ? (
-                        <div className="flex justify-center items-center py-8">
-                            <div className="text-[#FFFDE3]">Loading movies...</div>
-                        </div>
+                        <LoadingBar/>
                     ) : movies.length > 0 ? (
                         movies.map((item, index) => {
                             return (
