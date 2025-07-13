@@ -12,7 +12,7 @@ export const createMovie = async (movieData) => {
 };
 
 export const getMovies = async () => {
-    const response = await axios.get('/movies');
+    const response = await axios.get('/movies/search');
     return response.data;
 };
 
@@ -54,5 +54,17 @@ export const getPopularMovies = async () => {
     return response.data;
 };export const getReleasingSoonMovies = async () => {
     const response = await axios.get('/movies/soon-releasing');
+    return response.data;
+};
+
+export const searchMovies = async (searchTerm = '', genreId = '', sortBy = '', orderBy = '') => {
+    const params = new URLSearchParams();
+    
+    if (searchTerm) params.append('query', searchTerm);
+    if (genreId) params.append('genreId', genreId);
+    if (sortBy) params.append('sortBy', sortBy);
+    if (orderBy) params.append('orderBy', orderBy);
+    
+    const response = await axios.get(`/movies/search?${params.toString()}`);
     return response.data;
 };

@@ -7,7 +7,7 @@ const Movie = ({ movie, showRating = true }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`movies/${movie._id}`)
+    navigate(`/movies/${movie._id}`)
   }
   return (
     <div className="w-[180px] sm:w-[250px] md:w-[320px] lg:w-[320px] xl:w-[280px] h-[270px] sm:h-[375px] md:h-[480px] lg:h-[480px] xl:h-[420px] inline-block cursor-pointer relative p-4 z-0">
