@@ -131,7 +131,6 @@ const MoviesManagement = () => {
                     </tbody>
                 </Table>
 
-                {/* Modal for Adding/Editing Movies */}
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add New Movie</Modal.Title>

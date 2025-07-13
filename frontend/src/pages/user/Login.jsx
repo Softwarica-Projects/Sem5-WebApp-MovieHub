@@ -79,9 +79,7 @@ const UserLogin = () => {
                                     </Form.Control.Feedback>
                                 </Form.Group>
 
-                                {/* <Button variant="primary" type="submit" className="mt-4 w-100" disabled={isSubmitting}>
-                                    Login
-                                </Button> */}
+                            
                                 <button className="bg-cyan-600 py-3 my-6 rounded w-full font-bold">
                                     Sign In
                                 </button>
