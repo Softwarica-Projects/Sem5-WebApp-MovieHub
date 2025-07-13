@@ -59,7 +59,7 @@ describe('GenreService', () => {
     });
 
     describe('createGenre', () => {
-        it('should create genre successfully', async () => {
+        it('should create genre successfully with image', async () => {
             const genreData = {
                 name: 'Action',
             };
@@ -77,24 +77,26 @@ describe('GenreService', () => {
             expect(result).toEqual(mockGenre);
         });
 
-        // it('should create genre without image', async () => {
-        //     const genreData = {
-        //         name: 'Action',
-        //     };
+        it('should create genre without image', async () => {
+            const genreData = {
+                name: 'Action',
+            };
 
-        //     mockGenreRepository.findByName.mockResolvedValue(null);
-        //     mockGenreRepository.create.mockResolvedValue(mockGenre);
+            mockGenreRepository.findByName.mockResolvedValue(null);
+            mockGenreRepository.create.mockResolvedValue(mockGenre);
 
-        //     const result = await genreService.createGenre(mockGenre);
+            const result = await genreService.createGenre(genreData);
 
-        //     expect(mockGenreRepository.create).toHaveBeenCalledWith(mockGenre);
-        //     expect(result).toEqual(mockGenre);
-        // });
+            expect(mockGenreRepository.create).toHaveBeenCalledWith({
+                name: genreData.name,
+                image: null
+            });
+            expect(result).toEqual(mockGenre);
+        });
 
         it('should throw ConflictException for existing genre name', async () => {
             const genreData = {
                 name: 'Action',
-                description: 'Action movies description'
             };
 
             mockGenreRepository.findByName.mockResolvedValue(mockGenre);
@@ -104,60 +106,54 @@ describe('GenreService', () => {
     });
 
     describe('updateGenre', () => {
-        // it('should update genre successfully', async () => {
-        //     const genreData = {
-        //         name: 'Updated Action',
-        //         description: 'Updated action movies description'
-        //     };
+        it('should update genre successfully', async () => {
+            const genreData = {
+                name: 'Updated Action',
+            };
 
-        //     mockGenreRepository.findById.mockResolvedValue(mockGenre);
-        //     mockGenreRepository.findByNameExcludingId.mockResolvedValue(null);
-        //     mockGenreRepository.updateById.mockResolvedValue({ ...mockGenre, ...genreData });
+            mockGenreRepository.findById.mockResolvedValue(mockGenre);
+            mockGenreRepository.findByNameExcludingId.mockResolvedValue(null);
+            mockGenreRepository.updateById.mockResolvedValue({ ...mockGenre, ...genreData });
 
-        //     const result = await genreService.updateGenre(mockGenre._id, genreData);
+            const result = await genreService.updateGenre(mockGenre._id, genreData);
 
-        //     expect(mockGenreRepository.findById).toHaveBeenCalledWith(mockGenre._id);
-        //     expect(mockGenreRepository.findByNameExcludingId).toHaveBeenCalledWith(genreData.name, mockGenre._id);
-        //     expect(mockGenreRepository.updateById).toHaveBeenCalledWith(mockGenre._id, {
-        //         name: genreData.name,
-        //         description: genreData.description
-        //     });
-        //     expect(result).toEqual({ ...mockGenre, ...genreData });
-        // });
+            expect(mockGenreRepository.findById).toHaveBeenCalledWith(mockGenre._id);
+            expect(mockGenreRepository.findByNameExcludingId).toHaveBeenCalledWith(genreData.name, mockGenre._id);
+            expect(mockGenreRepository.updateById).toHaveBeenCalledWith(mockGenre._id, {
+                name: genreData.name
+            });
+            expect(result).toEqual({ ...mockGenre, ...genreData });
+        });
 
-        // it('should update genre with image', async () => {
-        //     const genreData = {
-        //         name: 'Updated Action',
-        //         description: 'Updated action movies description'
-        //     };
+        it('should update genre with image', async () => {
+            const genreData = {
+                name: 'Updated Action',
+            };
 
-        //     mockGenreRepository.findById.mockResolvedValue(mockGenre);
-        //     mockGenreRepository.findByNameExcludingId.mockResolvedValue(null);
-        //     mockGenreRepository.updateById.mockResolvedValue({ ...mockGenre, ...genreData });
+            mockGenreRepository.findById.mockResolvedValue(mockGenre);
+            mockGenreRepository.findByNameExcludingId.mockResolvedValue(null);
+            mockGenreRepository.updateById.mockResolvedValue({ ...mockGenre, ...genreData });
 
-        //     const result = await genreService.updateGenre(mockGenre._id, genreData, '/images/updated.jpg');
+            const result = await genreService.updateGenre(mockGenre._id, genreData, '/images/updated.jpg');
 
-        //     expect(mockGenreRepository.updateById).toHaveBeenCalledWith(mockGenre._id, {
-        //         name: genreData.name,
-        //         description: genreData.description,
-        //         image: '/images/updated.jpg'
-        //     });
-        //     expect(result).toEqual({ ...mockGenre, ...genreData });
-        // });
+            expect(mockGenreRepository.updateById).toHaveBeenCalledWith(mockGenre._id, {
+                name: genreData.name,
+                image: '/images/updated.jpg'
+            });
+            expect(result).toEqual({ ...mockGenre, ...genreData });
+        });
 
-        // it('should throw ValidationException for invalid genre ID', async () => {
-        //     const genreData = {
-        //         name: 'Updated Action',
-        //         description: 'Updated action movies description'
-        //     };
+        it('should throw ValidationException for invalid genre ID', async () => {
+            const genreData = {
+                name: 'Updated Action',
+            };
 
-        //     await expect(genreService.updateGenre('invalid-id', genreData)).rejects.toThrow(ValidationException);
-        // });
+            await expect(genreService.updateGenre('invalid-id', genreData)).rejects.toThrow(ValidationException);
+        });
 
         it('should throw NotFoundException for non-existent genre', async () => {
             const genreData = {
                 name: 'Updated Action',
-                description: 'Updated action movies description'
             };
 
             mockGenreRepository.findById.mockResolvedValue(null);
@@ -168,7 +164,6 @@ describe('GenreService', () => {
         it('should throw ConflictException for existing genre name', async () => {
             const genreData = {
                 name: 'Updated Action',
-                description: 'Updated action movies description'
             };
 
             mockGenreRepository.findById.mockResolvedValue(mockGenre);
@@ -212,9 +207,9 @@ describe('GenreService', () => {
             expect(result.image).toBe(`${basePath}${mockGenre.image}`);
         });
 
-        // it('should throw ValidationException for invalid genre ID', async () => {
-        //     await expect(genreService.getGenreById('invalid-id', 'http://localhost:3000')).rejects.toThrow(NotFoundException);
-        // });
+        it('should throw ValidationException for invalid genre ID', async () => {
+            await expect(genreService.getGenreById('invalid-id', 'http://localhost:3000')).rejects.toThrow(ValidationException);
+        });
 
         it('should throw NotFoundException for non-existent genre', async () => {
             mockGenreRepository.findById.mockResolvedValue(null);
@@ -233,9 +228,9 @@ describe('GenreService', () => {
             expect(result).toEqual({ message: 'Genre deleted successfully' });
         });
 
-        // it('should throw ValidationException for invalid genre ID', async () => {
-        //     await expect(genreService.deleteGenre('invalid-id')).rejects.toThrow(ValidationException);
-        // });
+        it('should throw ValidationException for invalid genre ID', async () => {
+            await expect(genreService.deleteGenre('invalid-id')).rejects.toThrow(ValidationException);
+        });
 
         it('should throw NotFoundException for non-existent genre', async () => {
             mockGenreRepository.deleteById.mockResolvedValue(null);

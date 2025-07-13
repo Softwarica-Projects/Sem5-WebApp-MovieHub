@@ -12,7 +12,6 @@ describe('GenreRepository', () => {
         mockGenre = {
             _id: global.mockId(),
             name: 'Action',
-            description: 'Action movies',
             imageUrl: '/images/action.jpg'
         };
 
