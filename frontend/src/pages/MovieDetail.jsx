@@ -23,7 +23,7 @@ const MovieDetail = () => {
         if (id) {
             setLoading(true);
             getMovieById(id).then((response) => {
-                setMovie();
+                setMovie(response);
                 setLoading(false);
             }).catch((error) => {
                 console.error('Error fetching movie:', error);
@@ -164,6 +164,72 @@ const MovieDetail = () => {
                     <div></div>
                 </div>
             </div>
+
+            {/* Cast Section */}
+            {
+                <div className=" py-12 px-4">
+                    <div className="max-w-6xl mx-auto">
+                        <h2 className="text-white text-3xl font-bold mb-8">Cast ({movie.cast.length})</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                            {movie.cast.map((member, index) => (
+                                <div key={index} className="bg-gray-800 rounded-lg p-4 text-center">
+                                    <div className="w-16 h-16 bg-gray-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                        <span className="text-white text-xl font-bold">
+                                            {member.name.charAt(0).toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-white font-medium text-sm mb-1">{member.name}</h3>
+                                    <p className="text-gray-400 text-xs">{member.type}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            }
+
+            {
+                <div className="py-12 px-4">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="space-y-6">
+                            {movie.ratings.map((rating, index) => (
+                                <div key={index} className="bg-gray-700 rounded-lg p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center">
+                                            <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+                                                <span className="text-white font-bold">
+                                                    {rating.userId?.name?.charAt(0).toUpperCase() || 'U'}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-white font-medium">
+                                                    {rating.userId?.name || 'Anonymous User'}
+                                                </h4>
+                                                <div className="flex items-center">
+                                                    {[...Array(5)].map((_, starIndex) => (
+                                                        <AiFillStar
+                                                            key={starIndex}
+                                                            className={`text-sm ${starIndex < rating.rating
+                                                                    ? 'text-orange-400'
+                                                                    : 'text-gray-400'
+                                                                }`}
+                                                        />
+                                                    ))}
+                                                    <span className="text-gray-300 text-sm ml-2">
+                                                        {rating.rating}/5
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {rating.review && (
+                                        <p className="text-gray-300 leading-relaxed">{rating.review}</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </PublicLayout >
     );
