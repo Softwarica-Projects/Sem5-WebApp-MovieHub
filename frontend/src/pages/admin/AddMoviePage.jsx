@@ -44,7 +44,7 @@ const AddMoviePage = () => {
       setLoading(true);
       getMovieById(id)
         .then((data) => {
-          const genreOption = genres.find(g => g.value === (data.genre?._id || data.genre));
+          const genreOption = genres.find(g => g.value === (data.genre?._id || data.genreId || data.genre));
           setNewMovie({
             title: data.title || '',
             description: data.description || '',

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { getFeaturedMovies } from "../services/movieService";
 import MovieTrailer from "../components/MovieTrailer";
+import { getImageUrl } from '../utils/imageUtils';
 const FeaturedMovie = () => {
   const [movies, setMovies] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -66,8 +67,8 @@ const FeaturedMovie = () => {
           </div>
           <img
             className="w-full h-[70vh] md:h-full object-cover"
-            src={movie?.coverImage}
-            alt=""
+            src={getImageUrl(movie?.coverImage)}
+            alt={movie?.title || "Featured movie"}
           />
           <div className="absolute w-full top-[30%] p-4 md:p-16">
             <h1 className="text-2xl md:text-5xl font-bold">{movie?.title} </h1>

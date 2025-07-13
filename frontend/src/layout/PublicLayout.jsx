@@ -21,7 +21,7 @@ const PublicLayout = ({ children }) => {
             MOVIEHUB
           </h1>
         </Link>
-        <div><Link to="/movie">
+        <div><Link to="/movies">
           <button className="text-[#FFFDE3] pr-6">Movies</button>
         </Link>
           {token ? (

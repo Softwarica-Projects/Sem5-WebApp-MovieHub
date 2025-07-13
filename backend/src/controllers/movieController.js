@@ -1,332 +1,219 @@
-const Movie = require('../models/movieModel');
+const MovieService = require('../services/MovieService');
+const { NotFoundException } = require('../exceptions');
 
 class MovieController {
-    constructor(Movie) {
-        this.Movie = Movie;
+    constructor() {
+        this.movieService = new MovieService();
     }
 
-    async createMovie(req, res) {
+    async createMovie(req, res, next) {
         try {
-            let { title, description, releaseDate, genre, trailerLink, movieLink, cast, runtime, movieType } = req.body;
-            const coverImage = req.file ? `/uploads/${req.file.filename}` : null;
-            if (typeof cast === 'string') {
-                cast = JSON.parse(cast);
+            const coverImagePath = req.file ? `/uploads/${req.file.filename}` : null;
+            await this.movieService.createMovie(req.body, coverImagePath);
+            res.status(201).json({
+                success: true,
+                message: 'Movie created successfully',
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async updateMovie(req, res, next) {
+        try {
+            const coverImagePath = req.file ? `/uploads/${req.file.filename}` : null;
+            await this.movieService.updateMovie(req.params.id, req.body, coverImagePath);
+
+            res.status(200).json({
+                success: true,
+                message: 'Movie updated successfully',
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getMovies(req, res, next) {
+        try {
+            const basePath = `${req.protocol}://${req.get('host')}`;
+            const movies = await this.movieService.getMovies(basePath);
+            res.status(200).json(movies);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getMovieById(req, res, next) {
+        try {
+            const basePath = `${req.protocol}://${req.get('host')}`;
+            const userId = req.user ? req.user.id : null;
+            const movie = await this.movieService.getMovieById(req.params.id, basePath, userId);
+            res.status(200).json(movie);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async deleteMovie(req, res, next) {
+        try {
+            const result = await this.movieService.deleteMovie(req.params.id);
+            res.status(200).json({
+                success: true,
+                message: result.message
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async rateMovie(req, res, next) {
+        try {
+            const result = await this.movieService.addRating(req.params.movieId, req.user.id, req.body);
+            res.status(200).json({
+                success: true,
+                message: result.message
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async viewMovie(req, res, next) {
+        try {
+            const result = await this.movieService.incrementMovieView(req.params.movieId, req.user.id);
+            res.status(200).json({
+                success: true,
+                message: result.message
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async toggleFeatured(req, res, next) {
+        try {
+            const movieId = req.params.movieId;
+            const movie = await this.movieService.movieRepository.findById(movieId);
+            if (!movie) {
+                throw new NotFoundException('Movie', movieId);
             }
 
-            const movie = new this.Movie({
-                title,
-                description,
-                releaseDate,
-                genre,
-                trailerLink,
-                movieLink,
-                cast,
-                coverImage,
-                runtime,
-                movieType,
+            const updatedMovie = await this.movieService.movieRepository.updateById(movieId, {
+                featured: !movie.featured
             });
 
-            await movie.save();
-            res.status(201).json({ message: 'Movie created successfully', movie });
+            res.status(200).json({
+                success: true,
+                message: `Movie ${updatedMovie.featured ? 'marked as featured' : 'removed from featured'}`,
+            });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async updateMovie(req, res) {
-        try {
-            let { title, description, releaseDate, genre, trailerLink, movieLink, cast, runtime, movieType } = req.body;
-            const coverImage = req.file ? `/uploads/${req.file.filename}` : undefined;
-
-            if (typeof cast === 'string') {
-                cast = JSON.parse(cast);
-            }
-
-            const updateData = {
-                title,
-                description,
-                releaseDate,
-                genre,
-                trailerLink,
-                movieLink,
-                cast,
-                runtime,
-                movieType,
-            };
-
-            if (coverImage) {
-                updateData.coverImage = coverImage;
-            }
-
-            const movie = await this.Movie.findByIdAndUpdate(req.params.id, updateData, { new: true });
-            if (!movie) {
-                return res.status(404).json({ message: 'Movie not found' });
-            }
-
-            const basePath = `${req.protocol}://${req.get('host')}`;
-            movie.coverImage = movie.coverImage ? `${basePath}${movie.coverImage}` : null;
-
-            res.status(200).json({ message: 'Movie updated successfully', movie });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async getMovies(req, res) {
+    async getFeaturedMovies(req, res, next) {
         try {
             const basePath = `${req.protocol}://${req.get('host')}`;
-            const movies = await this.Movie.find().populate('genre', 'name');
-            const moviesWithBasePath = movies.map(movie => ({
-                ...movie.toObject(),
-                coverImage: movie.coverImage ? `${basePath}${movie.coverImage}` : null,
-                genre: movie.genre && typeof movie.genre === 'object' ? movie.genre.name : movie.genre,
-            }));
-
-            res.status(200).json(moviesWithBasePath);
+            const movies = await this.movieService.getFeaturedMovies(basePath);
+            res.status(200).json(movies);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async getMovieById(req, res) {
+    async getRecentlyAddedMovies(req, res, next) {
         try {
             const basePath = `${req.protocol}://${req.get('host')}`;
-            const movie = await this.Movie.findById(req.params.id)
-                .populate('genre', 'name')
-                .populate({
-                    path: 'ratings.userId',
-                    select: 'name',
-                    model: 'User'
-                });
-            if (!movie) {
-                return res.status(404).json({ message: 'Movie not found' });
-            }
-            movie.coverImage = movie.coverImage ? `${basePath}${movie.coverImage}` : null;
-            const ratingsWithUserName = (movie.ratings || []).map(rating => ({
-                _id: rating._id,
-                userId: rating.userId?._id || rating.userId,
-                userName: rating.userId?.name || null,
-                rating: rating.rating,
-                review: rating.review,
-            }));
-
-            const movieObj = movie.toObject();
-            movieObj.ratings = ratingsWithUserName;
-
-            let isFavourite = false;
-            if (req.user && req.user.id) {
-                const User = require('../models/userModel');
-                const user = await User.findById(req.user.id);
-                if (user && user.favourites && user.favourites.some(fav => fav.toString() === movie._id.toString())) {
-                    isFavourite = true;
-                }
-            }
-            movieObj.isFavourite = isFavourite;
-            return res.status(200).json(movieObj);
+            const movies = await this.movieService.getRecentMovies(5, basePath);
+            res.status(200).json(movies);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async deleteMovie(req, res) {
+    async getTopViewedMovies(req, res, next) {
         try {
-            const movie = await this.Movie.findByIdAndDelete(req.params.id);
-            if (!movie) {
-                return res.status(404).json({ message: 'Movie not found' });
-            }
-            res.status(204).send();
+            const basePath = `${req.protocol}://${req.get('host')}`;
+            const movies = await this.movieService.getMostViewedMovies(5, basePath);
+            res.status(200).json(movies);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async rateMovie(req, res) {
+    async getSoonReleasingMovies(req, res, next) {
         try {
-            const { movieId } = req.params;
-            const { rating, review } = req.body;
-            const userId = req.user.id;
-            if (rating < 1 || rating > 5) {
-                return res.status(400).json({ message: 'Rating must be between 1 and 5' });
-            }
-            const movie = await this.Movie.findById(movieId);
-            if (!movie) {
-                return res.status(404).json({ message: 'Movie not found' });
-            }
-
-            const existingRating = movie.ratings.find((r) => r.userId.toString() === userId);
-            if (existingRating) {
-                existingRating.rating = rating;
-                existingRating.review = review;
-            } else {
-                movie.ratings.push({ userId, rating, review });
-            }
-
-            const totalRatings = movie.ratings.reduce((sum, r) => sum + r.rating, 0);
-            movie.averageRating = totalRatings / movie.ratings.length;
-
-            await movie.save();
-
-            res.status(200).json({ message: 'Rating submitted successfully', movie });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async viewMovie(req, res) {
-        try {
-            const { movieId } = req.params;
-            const userId = req.user.id;
-
-            const movie = await this.Movie.findById(movieId);
-            if (!movie) {
-                return res.status(404).json({ message: 'Movie not found' });
-            }
-            movie.views += 1;
-            movie.viewedBy.push(userId);
-            await movie.save();
-            res.status(200).json({ message: 'Movie view recorded', views: movie.views });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async toggleFeatured(req, res) {
-        try {
-            const { movieId } = req.params;
-            const movie = await this.Movie.findById(movieId);
-            if (!movie) {
-                return res.status(404).json({ message: 'Movie not found' });
-            }
-            movie.featured = !movie.featured;
-            await movie.save();
-            res.status(200).json({ message: `Movie ${movie.featured ? 'marked as featured' : 'removed from featured'}`, movie });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async getFeaturedMovies(req, res) {
-        try {
-            const movies = await this.Movie.find({ featured: true })
-                .sort({ createdAt: -1 })
-                .limit(5)
-                .populate('genre', 'name');
-            const moviesWithGenre = movies.map(movie => ({
-                ...movie.toObject(),
-                coverImage: movie.coverImage ? `${req.protocol}://${req.get('host')}${movie.coverImage}` : null,
-                genre: movie.genre && typeof movie.genre === 'object' ? movie.genre._id : movie.genre,
-                genreName: movie.genre && typeof movie.genre === 'object' ? movie.genre.name : '',
-            }));
-            res.status(200).json(moviesWithGenre);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async getRecentlyAddedMovies(req, res) {
-        try {
-            const movies = await this.Movie.find()
-                .sort({ createdAt: -1 })
-                .limit(5)
-                .populate('genre', 'name');
-            const moviesWithGenre = movies.map(movie => ({
-                ...movie.toObject(),
-                coverImage: movie.coverImage ? `${req.protocol}://${req.get('host')}${movie.coverImage}` : null,
-                genre: movie.genre && typeof movie.genre === 'object' ? movie.genre._id : movie.genre,
-                genreName: movie.genre && typeof movie.genre === 'object' ? movie.genre.name : '',
-            }));
-            res.status(200).json(moviesWithGenre);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async getTopViewedMovies(req, res) {
-        try {
-            const movies = await this.Movie.find().populate('genre', 'name');
-            const moviesWithUniqueViews = movies.map(movie => ({
-                ...movie.toObject(),
-                uniqueViews: movie.viewedBy.length,
-                coverImage: movie.coverImage ? `${req.protocol}://${req.get('host')}${movie.coverImage}` : null,
-                genre: movie.genre && typeof movie.genre === 'object' ? movie.genre._id : movie.genre,
-                genreName: movie.genre && typeof movie.genre === 'object' ? movie.genre.name : '',
-            }));
-
-            const topViewedMovies = moviesWithUniqueViews
-                .sort((a, b) => b.uniqueViews - a.uniqueViews)
-                .slice(0, 5);
-
-            res.status(200).json(topViewedMovies);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-
-    async getSoonReleasingMovies(req, res) {
-        try {
+            const basePath = `${req.protocol}://${req.get('host')}`;
             const currentDate = new Date();
-            const basePath = `${req.protocol}://${req.get('host')}`;
-            const movies = await this.Movie.find({ releaseDate: { $gt: currentDate } })
-                .sort({ releaseDate: 1 })
-                .limit(5)
-                .populate('genre', 'name');
-            const moviesWithBasePath = movies.map(movie => ({
-                ...movie.toObject(),
-                coverImage: movie.coverImage ? `${basePath}${movie.coverImage}` : null,
-                genre: movie.genre && typeof movie.genre === 'object' ? movie.genre.name : movie.genre,
-            }));
-            res.status(200).json(moviesWithBasePath);
+            const movies = await this.movieService.movieRepository.find(
+                { releaseDate: { $gt: currentDate } },
+                'genre',
+                { releaseDate: 1 }
+            );
+            const limitedMovies = movies.slice(0, 5);
+            const formattedMovies = this.movieService.formatMoviesWithBasePath(limitedMovies, basePath);
+
+            res.status(200).json(formattedMovies);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async toggleFavorite(req, res) {
+    async toggleFavorite(req, res, next) {
         try {
+            const AuthService = require('../services/AuthService');
+            const authService = new AuthService();
             const { movieId } = req.params;
             const userId = req.user.id;
-            const User = require('../models/userModel');
-            const user = await User.findById(userId);
+
+            const user = await authService.userRepository.findById(userId);
             const isFavorite = user.favourites.includes(movieId);
 
             if (isFavorite) {
-                user.favourites = user.favourites.filter((fav) => fav.toString() !== movieId);
-                await user.save();
-                return res.status(200).json({ message: 'Movie removed from favorites' });
+                await authService.removeFromFavorites(userId, movieId);
+                res.status(200).json({
+                    success: true,
+                    message: 'Movie removed from favorites'
+                });
             } else {
-                user.favourites.push(movieId);
-                await user.save();
-                return res.status(200).json({ message: 'Movie added to favorites' });
+                await authService.addToFavorites(userId, movieId);
+                res.status(200).json({
+                    success: true,
+                    message: 'Movie added to favorites'
+                });
             }
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async searchMovies(req, res) {
+    async searchMovies(req, res, next) {
         try {
-            const { query, genreId } = req.query;
+            const { query, genreId, sortBy, orderBy } = req.query;
             const basePath = `${req.protocol}://${req.get('host')}`;
-            let filter = {};
-
-            if (query) {
-                filter.title = { $regex: query, $options: 'i' };
-            }
-            if (genreId) {
-                filter.genre = genreId;
-            }
-
-            const movies = await this.Movie.find(filter).populate('genre', 'name');
-            const moviesWithBasePath = movies.map(movie => ({
-                ...movie.toObject(),
-                coverImage: movie.coverImage ? `${basePath}${movie.coverImage}` : null,
-                genre: movie.genre && typeof movie.genre === 'object' ? movie.genre.name : movie.genre,
-            }));
-            res.status(200).json(moviesWithBasePath);
+            const movies = await this.movieService.searchMovies(query, genreId, sortBy, orderBy, basePath);
+            res.status(200).json(movies);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            next(error);
         }
     }
 }
 
-module.exports = MovieController;
+const movieController = new MovieController();
+
+module.exports = {
+    createMovie: movieController.createMovie.bind(movieController),
+    updateMovie: movieController.updateMovie.bind(movieController),
+    getMovies: movieController.getMovies.bind(movieController),
+    getMovieById: movieController.getMovieById.bind(movieController),
+    deleteMovie: movieController.deleteMovie.bind(movieController),
+    rateMovie: movieController.rateMovie.bind(movieController),
+    viewMovie: movieController.viewMovie.bind(movieController),
+    toggleFeatured: movieController.toggleFeatured.bind(movieController),
+    getFeaturedMovies: movieController.getFeaturedMovies.bind(movieController),
+    getRecentlyAddedMovies: movieController.getRecentlyAddedMovies.bind(movieController),
+    getTopViewedMovies: movieController.getTopViewedMovies.bind(movieController),
+    getSoonReleasingMovies: movieController.getSoonReleasingMovies.bind(movieController),
+    toggleFavorite: movieController.toggleFavorite.bind(movieController),
+    searchMovies: movieController.searchMovies.bind(movieController)
+};
