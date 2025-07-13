@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
-import { getMovieById, toggleFavMovie, addMovieRating } from "../services/movieService";
+import { getMovieById, toggleFavMovie, addMovieRating, trackMovieView } from "../services/movieService";
 import PublicLayout from "../layout/PublicLayout";
 import MovieTrailer from "../components/MovieTrailer";
 import LoadingBar from "../components/LoadingBar";
@@ -36,6 +36,9 @@ const MovieDetail = () => {
                 console.error('Error fetching movie:', error);
                 setLoading(false);
             });
+            trackMovieView(id).catch((error) => {
+                console.error('Error tracking movie view:', error);
+            });
         }
     }, [id]);
 
@@ -68,7 +71,7 @@ const MovieDetail = () => {
             setShowReviewModal(false);
             handleSuccess('Review submitted successfully!');
         } catch (error) {
-            handleError('Failed to submit review. Please try again.');
+            handleError(error);
         } finally {
             setSubmittingReview(false);
         }

@@ -40,7 +40,7 @@ describe('MovieService', () => {
             genre: global.mockId(),
             runtime: 120,
             movieType: 'movie',
-            cast: [{ name: 'Actor 1', role: 'Main' }],
+            cast: [{ name: 'Actor 1', type: 'Actor' }],
             director: 'Test Director',
             coverImage: '/images/test.jpg',
             ratings: [],
@@ -90,7 +90,7 @@ describe('MovieService', () => {
                 genre: new mongoose.Types.ObjectId(),
                 runtime: 120,
                 movieType: 'movie',
-                cast: [{ name: 'Actor 1', role: 'Main', type: 'Actor' }]
+                cast: [{ name: 'Actor 1', type: 'Actor' }]
             };
 
             expect(() => movieService.validateMovieData(validData)).not.toThrow();
@@ -157,7 +157,7 @@ describe('MovieService', () => {
                 genre: mockGenre._id,
                 runtime: 120,
                 movieType: 'movie',
-                cast: JSON.stringify([{ name: 'Actor 1', role: 'Main', type: 'Actor' }])
+                cast: JSON.stringify([{ name: 'Actor 1', type: 'Actor' }])
             };
 
             mockGenreRepository.findById.mockResolvedValue(mockGenre);
@@ -173,7 +173,7 @@ describe('MovieService', () => {
                 genre: movieData.genre,
                 trailerLink: null,
                 movieLink: null,
-                cast: [{ name: 'Actor 1', role: 'Main', type: 'Actor' }],
+                cast: [{ name: 'Actor 1', type: 'Actor' }],
                 runtime: movieData.runtime,
                 movieType: movieData.movieType,
                 coverImage: '/images/test.jpg'
@@ -341,18 +341,59 @@ describe('MovieService', () => {
     });
 
     describe('searchMovies', () => {
-        // it('should search movies', async () => {
-        //     const basePath = 'http://localhost:3000';
-        //     const searchTerm = 'Test';
-        //     const movies = [mockMovie];
+        it('should search movies', async () => {
+            const basePath = 'http://localhost:3000';
+            const searchTerm = 'Test';
+            const movies = [mockMovie];
 
-        //     mockMovieRepository.searchMovies.mockResolvedValue(movies);
+            mockMovieRepository.advancedSearchMovies.mockResolvedValue(movies);
 
-        //     const result = await movieService.searchMovies(searchTerm,null,null,null, basePath);
+            const result = await movieService.searchMovies(searchTerm, null, null, null, basePath);
 
-        //     expect(mockMovieRepository.searchMovies).toHaveBeenCalledWith(searchTerm);
-        //     expect(result).toHaveLength(1);
-        // });
+            expect(mockMovieRepository.advancedSearchMovies).toHaveBeenCalledWith(searchTerm, null, null, null);
+            expect(result).toHaveLength(1);
+        });
+
+        it('should search movies with all parameters', async () => {
+            const basePath = 'http://localhost:3000';
+            const searchTerm = 'Test';
+            const genreId = mockGenre._id;
+            const sortBy = 'rating';
+            const orderBy = 'desc';
+            const movies = [mockMovie];
+
+            mockGenreRepository.findById.mockResolvedValue(mockGenre);
+            mockMovieRepository.advancedSearchMovies.mockResolvedValue(movies);
+
+            const result = await movieService.searchMovies(searchTerm, genreId, sortBy, orderBy, basePath);
+
+            expect(mockGenreRepository.findById).toHaveBeenCalledWith(genreId);
+            expect(mockMovieRepository.advancedSearchMovies).toHaveBeenCalledWith(searchTerm, genreId, sortBy, orderBy);
+            expect(result).toHaveLength(1);
+        });
+
+        it('should throw NotFoundException for invalid genre', async () => {
+            const searchTerm = 'Test';
+            const genreId = mockGenre._id;
+            
+            mockGenreRepository.findById.mockResolvedValue(null);
+
+            await expect(movieService.searchMovies(searchTerm, genreId, null, null, 'http://localhost:3000')).rejects.toThrow(NotFoundException);
+        });
+
+        it('should throw ValidationException for invalid sortBy', async () => {
+            const searchTerm = 'Test';
+            const invalidSortBy = 'invalid';
+
+            await expect(movieService.searchMovies(searchTerm, null, invalidSortBy, null, 'http://localhost:3000')).rejects.toThrow(ValidationException);
+        });
+
+        it('should throw ValidationException for invalid orderBy', async () => {
+            const searchTerm = 'Test';
+            const invalidOrderBy = 'invalid';
+
+            await expect(movieService.searchMovies(searchTerm, null, null, invalidOrderBy, 'http://localhost:3000')).rejects.toThrow(ValidationException);
+        });
     });
 
     describe('addRating', () => {

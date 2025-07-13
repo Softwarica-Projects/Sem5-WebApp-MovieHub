@@ -83,6 +83,7 @@ class AuthController {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                createdAt: user.createdAt,
                 role: user.role,
                 image: user.image ? `${basePath}${user.image}` : null,
             });
@@ -103,6 +104,15 @@ class AuthController {
             next(error);
         }
     }
+
+    async getUserStats(req, res, next) {
+        try {
+            const stats = await this.authService.getUserStats(req.user.id);
+            res.status(200).json(stats);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 const authController = new AuthController();
@@ -114,5 +124,6 @@ module.exports = {
     changePassword: authController.changePassword.bind(authController),
     getFavoriteMovies: authController.getFavoriteMovies.bind(authController),
     getMe: authController.getMe.bind(authController),
-    updateProfile: authController.updateProfile.bind(authController)
+    updateProfile: authController.updateProfile.bind(authController),
+    getUserStats: authController.getUserStats.bind(authController)
 };

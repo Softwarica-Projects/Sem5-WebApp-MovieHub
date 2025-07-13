@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import MovieDetail from './pages/MovieDetail';
 import MoviePage from './pages/MoviePage';
 import FavMoviePage from './pages/FavMoviePage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
     return (
@@ -26,7 +27,17 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/movies/:id" element={<MovieDetail />} />
                     <Route path="/movies" element={<MoviePage />} />
-                      <Route path="/favourites" element={<FavMoviePage />} />
+
+                    <Route path="/favourites" element={
+                        <ProtectedRoute role="admin,user">
+                            <FavMoviePage />
+                        </ProtectedRoute>} />
+                        
+                    <Route path="/profile" element={
+                        <ProtectedRoute role="admin,user">
+                            <ProfilePage />
+                        </ProtectedRoute>} />
+
                     {/* [Admin] */}
                     <Route
                         path="/admin"

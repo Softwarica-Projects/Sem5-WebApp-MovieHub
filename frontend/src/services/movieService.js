@@ -81,3 +81,8 @@ export const addMovieRating = async (movieId, ratingData) => {
     const response = await axios.post(`/movies/${movieId}/rate`, ratingData);
     return response.data;
 };
+
+export const trackMovieView = async (movieId) => {
+    const response = await axios.post(`/movies/${movieId}/view`);
+    return response.data;
+};

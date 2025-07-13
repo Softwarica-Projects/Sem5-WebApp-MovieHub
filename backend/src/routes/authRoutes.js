@@ -167,4 +167,48 @@ router.put('/update-profile', authenticateToken,upload.single('image'), authCont
  */
 router.get('/favorites', authenticateToken, authController.getFavoriteMovies);
 
+/**
+ * @swagger
+ * /auth/stats:
+ *   get:
+ *     summary: Get user statistics including rated movies count, viewed movies count, and most viewed movie
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ratedMoviesCount:
+ *                       type: number
+ *                       description: Number of movies rated by the user
+ *                     viewedMoviesCount:
+ *                       type: number
+ *                       description: Number of movies viewed by the user
+ *                     mostViewedMovie:
+ *                       type: object
+ *                       nullable: true
+ *                       properties:
+ *                         title:
+ *                           type: string
+ *                         views:
+ *                           type: number
+ *                         coverImage:
+ *                           type: string
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/stats', authenticateToken, authController.getUserStats);
+
 module.exports = router;
