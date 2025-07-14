@@ -1,5 +1,6 @@
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const menuItems = [
   { label: 'Dashboard', path: '/admin/' },
@@ -11,10 +12,10 @@ const menuItems = [
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const userName = localStorage.getItem('name');
+  const { userName, logoutUser } = useAuth();
 
   const handleLogout = () => {
-    localStorage.clear();
+    logoutUser();
     navigate('/admin/login');
   };
 

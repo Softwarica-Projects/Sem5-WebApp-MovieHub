@@ -5,13 +5,13 @@ import AdminLayout from '../../layout/AdminLayout';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import { handleError, handleSuccess } from '../../utils/toastUtils';
 import { confirmAlert } from 'react-confirm-alert';
+import { useAuth } from '../../hooks/useAuth';
 
 const AdminsManagement = () => {
     const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
-
-    const currentUserId = localStorage.getItem('id');
+    const { userId: currentUserId } = useAuth();
     const fetchUsers = async () => {
         const data = await getAllUser();
         setUsers(data.users);

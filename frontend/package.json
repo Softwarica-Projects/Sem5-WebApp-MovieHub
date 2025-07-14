@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.5",
     "prop-types": "^15.8.1",
@@ -12,6 +13,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.57.0",
     "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
     "react-select": "^5.10.1",

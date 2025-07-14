@@ -1,15 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const PublicLayout = ({ children }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
+  const { token, userRole, logoutUser } = useAuth();
+  
   function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('id');
-    localStorage.removeItem('role');
-    localStorage.removeItem('name');
+    logoutUser();
     navigate("/");
   };
 
@@ -33,7 +31,7 @@ const PublicLayout = ({ children }) => {
               <Link to="/profile">
                 <button className="text-[#FFFDE3] pr-6">Account</button>
               </Link>
-              {role == 'admin' &&
+              {userRole == 'admin' &&
                 <Link to="/admin">
                   <button className="text-[#FFFDE3] pr-6">Admin Panel</button>
                 </Link>

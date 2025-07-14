@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { updateUserProfile } from '../services/userService';
 import { handleError, handleSuccess } from '../utils/toastUtils';
+import { useAuth } from '../hooks/useAuth';
 
 const ProfileUpdateDialog = ({ isOpen, onClose, user, onUpdate }) => {
     const [profileImage, setProfileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(user?.image || null);
+    const { updateUserProfile: updateReduxProfile } = useAuth();
 
     const {
         register,
@@ -54,6 +56,7 @@ const ProfileUpdateDialog = ({ isOpen, onClose, user, onUpdate }) => {
             }
 
             const response = await updateUserProfile(submitData);
+            updateReduxProfile({ name: data.name });
             handleSuccess(response.message || 'Profile updated successfully');
             onUpdate();
             onClose();
