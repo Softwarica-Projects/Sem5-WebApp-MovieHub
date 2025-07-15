@@ -76,7 +76,7 @@ describe('MovieService', () => {
         mockUser = {
             _id: global.mockId(),
             name: 'Test User',
-            email: 'test@example.com',
+            email: 'test@gmail.com',
             favourites: []
         };
     });
