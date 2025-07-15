@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './pages/HomePage';
@@ -15,8 +15,22 @@ import MovieDetail from './pages/MovieDetail';
 import MoviePage from './pages/MoviePage';
 import FavMoviePage from './pages/FavMoviePage';
 import ProfilePage from './pages/ProfilePage';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
+    const { syncWithStorage } = useAuth();
+
+    useEffect(() => {
+        const handleStorageChange = (e) => {
+            if (e.key === 'token' || e.key === 'id' || e.key === 'name' || e.key === 'role') {
+                syncWithStorage();
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, [syncWithStorage]);
+
     return (
         <>
             <ToastContainer position="top-right" autoClose={3000} />

@@ -12,7 +12,7 @@ describe('UserRepository', () => {
         mockUser = {
             _id: global.mockId(),
             name: 'Test User',
-            email: 'test@example.com',
+            email: 'test@gmail.com',
             password: 'hashedPassword',
             favourites: []
         };
@@ -27,16 +27,16 @@ describe('UserRepository', () => {
         it('should find user by email', async () => {
             User.findOne.mockResolvedValue(mockUser);
             
-            const result = await userRepository.findByEmail('test@example.com');
+            const result = await userRepository.findByEmail('test@gmail.com');
             
-            expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
+            expect(User.findOne).toHaveBeenCalledWith({ email: 'test@gmail.com' });
             expect(result).toEqual(mockUser);
         });
 
         it('should return null if user not found', async () => {
             User.findOne.mockResolvedValue(null);
             
-            const result = await userRepository.findByEmail('notfound@example.com');
+            const result = await userRepository.findByEmail('notfound@gmail.com');
             
             expect(result).toBeNull();
         });
@@ -47,10 +47,10 @@ describe('UserRepository', () => {
             const excludeId = global.mockId();
             User.findOne.mockResolvedValue(mockUser);
             
-            const result = await userRepository.findByEmailExcludingId('test@example.com', excludeId);
+            const result = await userRepository.findByEmailExcludingId('test@gmail.com', excludeId);
             
             expect(User.findOne).toHaveBeenCalledWith({ 
-                email: 'test@example.com', 
+                email: 'test@gmail.com', 
                 _id: { $ne: excludeId } 
             });
             expect(result).toEqual(mockUser);

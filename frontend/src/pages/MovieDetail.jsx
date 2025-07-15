@@ -10,9 +10,10 @@ import CoverVideo from "../components/CoverVideo";
 import MovieInfo from "../components/MovieInfo";
 import CastSection from "../components/CastSection";
 import ReviewsSection from "../components/ReviewsSection";
+import { useAuth } from "../hooks/useAuth";
 
 const MovieDetail = () => {
-    const role = localStorage.getItem("role");
+    const { isAuthenticated, userRole } = useAuth();
     const [movie, setMovie] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -36,9 +37,10 @@ const MovieDetail = () => {
                 console.error('Error fetching movie:', error);
                 setLoading(false);
             });
-            trackMovieView(id).catch((error) => {
-                console.error('Error tracking movie view:', error);
-            });
+            if (isAuthenticated)
+                trackMovieView(id).catch((error) => {
+                    console.error('Error tracking movie view:', error);
+                });
         }
     }, [id]);
 
@@ -125,7 +127,7 @@ const MovieDetail = () => {
 
                     <MovieInfo
                         movie={movie}
-                        role={role}
+                        role={userRole}
                         setShowModal={setShowModal}
                         onFavClick={onFavClick}
                     />
@@ -136,7 +138,7 @@ const MovieDetail = () => {
 
                     <ReviewsSection
                         ratings={movie.ratings}
-                        role={role}
+                        role={userRole}
                         setShowReviewModal={setShowReviewModal}
                     />
                 </div>

@@ -4,10 +4,12 @@ import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { loginUser } from '../../services/authService';
 import { handleError, handleSuccess } from '../../utils/toastUtils';
+import { useAuth } from '../../hooks/useAuth';
 import PublicLayout from '../../layout/PublicLayout';
 
 const UserLogin = () => {
     const navigate = useNavigate();
+    const { loginUser: setUserLogin } = useAuth();
     const {
         register,
         handleSubmit,
@@ -17,10 +19,14 @@ const UserLogin = () => {
     const onSubmit = async (data) => {
         try {
             const response = await loginUser({ email: data.email, password: data.password });
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('id', response.id);
-            localStorage.setItem('role', response.role);
-            localStorage.setItem('name', response.name);
+            
+            setUserLogin({
+                token: response.token,
+                id: response.id,
+                role: response.role,
+                name: response.name
+            });
+            
             handleSuccess('User loggedin successful!');
             if(response.role === 'admin') {
                 navigate('/admin');

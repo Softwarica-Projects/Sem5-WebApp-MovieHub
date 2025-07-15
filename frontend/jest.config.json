@@ -1,0 +1,14 @@
+{
+  "transformIgnorePatterns": [
+    "node_modules/(?!(axios|@testing-library)/)"
+  ],
+  "moduleNameMapper": {
+    "^axios$": "axios/dist/node/axios.cjs"
+  },
+  "testEnvironment": "jsdom",
+  "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"],
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "\\.helper\\.(js|jsx|ts|tsx)$"
+  ]
+}

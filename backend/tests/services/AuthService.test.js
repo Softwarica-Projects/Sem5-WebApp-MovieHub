@@ -26,7 +26,7 @@ describe('AuthService', () => {
         mockUser = {
             _id: global.mockId(),
             name: 'Test User',
-            email: 'test@example.com',
+            email: 'test@gmail.com',
             password: 'hashedPassword',
             role: 'user',
             favourites: [],
@@ -46,8 +46,8 @@ describe('AuthService', () => {
     describe('validateUserData', () => {
         it('should validate valid user data', () => {
             const validData = {
-                name: 'John Doe',
-                email: 'john@example.com',
+                name: 'Rishan Shrestha',
+                email: 'rishan@gmail.com',
                 password: 'password123'
             };
 
@@ -56,7 +56,7 @@ describe('AuthService', () => {
 
         it('should throw ValidationException for missing name', () => {
             const invalidData = {
-                email: 'john@example.com',
+                email: 'rishan@gmail.com',
                 password: 'password123'
             };
 
@@ -65,7 +65,7 @@ describe('AuthService', () => {
 
         it('should throw ValidationException for invalid email', () => {
             const invalidData = {
-                name: 'John Doe',
+                name: 'Rishan Shrestha',
                 email: 'invalid-email',
                 password: 'password123'
             };
@@ -75,8 +75,8 @@ describe('AuthService', () => {
 
         it('should throw ValidationException for short password', () => {
             const invalidData = {
-                name: 'John Doe',
-                email: 'john@example.com',
+                name: 'Rishan Shrestha',
+                email: 'rishan@gmail.com',
                 password: '123'
             };
 
@@ -87,8 +87,8 @@ describe('AuthService', () => {
     describe('registerUser', () => {
         it('should register a new user successfully', async () => {
             const userData = {
-                name: 'John Doe',
-                email: 'john@example.com',
+                name: 'Rishan Shrestha',
+                email: 'rishan@gmail.com',
                 password: 'password123'
             };
 
@@ -97,8 +97,8 @@ describe('AuthService', () => {
             mockUserRepository.create.mockResolvedValue({
                 toObject: () => ({
                     _id: expect.any(String),
-                    name: 'John Doe',
-                    email: 'john@example.com',
+                    name: 'Rishan Shrestha',
+                    email: 'rishan@gmail.com',
                     role: 'user',
                     favourites: []
                 })
@@ -125,8 +125,8 @@ describe('AuthService', () => {
 
         it('should throw ConflictException if user already exists', async () => {
             const userData = {
-                name: 'John Doe',
-                email: 'john@example.com',
+                name: 'Rishan Shrestha',
+                email: 'rishan@gmail.com',
                 password: 'password123'
             };
 
@@ -139,7 +139,7 @@ describe('AuthService', () => {
     describe('loginUser', () => {
         it('should login user successfully', async () => {
             const credentials = {
-                email: 'test@example.com',
+                email: 'test@gmail.com',
                 password: 'password123'
             };
 
@@ -166,7 +166,7 @@ describe('AuthService', () => {
 
         it('should throw ValidationException for invalid credentials', async () => {
             const credentials = {
-                email: 'test@example.com',
+                email: 'test@gmail.com',
                 password: 'wrongPassword'
             };
 
@@ -178,7 +178,7 @@ describe('AuthService', () => {
 
         it('should throw ValidationException for non-existent user', async () => {
             const credentials = {
-                email: 'nonexistent@example.com',
+                email: 'nonexistent@gmail.com',
                 password: 'password123'
             };
 
@@ -192,7 +192,7 @@ describe('AuthService', () => {
         it('should login admin successfully', async () => {
             const adminUser = { ...mockUser, role: 'admin' };
             const credentials = {
-                email: 'admin@example.com',
+                email: 'admin@gmail.com',
                 password: 'password123'
             };
 
@@ -216,7 +216,7 @@ describe('AuthService', () => {
 
         it('should throw ValidationException for non-admin user', async () => {
             const credentials = {
-                email: 'user@example.com',
+                email: 'test-user@gmail.com',
                 password: 'password123'
             };
 
@@ -288,7 +288,7 @@ describe('AuthService', () => {
         it('should update user profile successfully', async () => {
             const profileData = {
                 name: 'Updated Name',
-                email: 'updated@example.com'
+                email: 'updated@gmail.com'
             };
 
             mockUserRepository.findById.mockResolvedValue(mockUser);
@@ -306,7 +306,7 @@ describe('AuthService', () => {
         it('should throw ConflictException for existing email', async () => {
             const profileData = {
                 name: 'Updated Name',
-                email: 'existing@example.com'
+                email: 'existing@gmail.com'
             };
 
             mockUserRepository.findById.mockResolvedValue(mockUser);

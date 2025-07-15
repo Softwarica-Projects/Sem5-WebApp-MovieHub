@@ -7,6 +7,7 @@ import UserStatsCard from '../components/UserStatsCard';
 import { getUserProfile } from '../services/userService';
 import { handleError } from '../utils/toastUtils';
 import LoadingBar from '../components/LoadingBar';
+import { useAuth } from '../hooks/useAuth';
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
@@ -14,15 +15,15 @@ const ProfilePage = () => {
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     const [showPasswordDialog, setShowPasswordDialog] = useState(false);
     const navigate = useNavigate();
+    const { token, isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
+        if (!isAuthenticated) {
             navigate('/login');
             return;
         }
         fetchUserProfile();
-    }, [navigate]);
+    }, [navigate, isAuthenticated]);
 
     const fetchUserProfile = async () => {
         try {
