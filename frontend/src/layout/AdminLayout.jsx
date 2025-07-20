@@ -16,7 +16,7 @@ const AdminLayout = ({ children }) => {
 
   const handleLogout = () => {
     logoutUser();
-    navigate('/admin/login');
+    navigate('/login');
   };
 
   return (
