@@ -7,6 +7,8 @@ class GenreController {
 
     async createGenre(req, res, next) {
         try {
+            const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+            await this.genreService.createGenre(req.body, imagePath);
             res.status(201).json({
                 success: true,
                 message: 'Genre created successfully',
