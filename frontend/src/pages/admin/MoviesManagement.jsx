@@ -84,7 +84,7 @@ const MoviesManagement = () => {
                                 </td>
                                 <td>{movie.title}</td>
                                 <td>{movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : ''}</td>
-                                <td>{movie.averageRating ?? '-'}</td>
+                                <td>{movie.averageRating?.toFixed(2) ?? '-'}</td>
                                 <td>
                                     <div style={{ maxWidth: 180, overflowX: 'auto', whiteSpace: 'nowrap' }}>
                                         {movie.genre}

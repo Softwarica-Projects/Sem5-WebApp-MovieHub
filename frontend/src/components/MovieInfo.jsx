@@ -27,7 +27,7 @@ const MovieInfo = ({
                         <div className="flex flex-row justify-center items-center mr-5 pb-2 text-orange-400">
                             <AiFillStar className="text-3xl mr-2" />
                             <p className="text-4xl font-bold">
-                                {movie?.averageRating || "0.0"}
+                                {movie?.averageRating?.toFixed(2) || "0.0"}
                             </p>
                         </div>
                         <div className="flex flex-col">

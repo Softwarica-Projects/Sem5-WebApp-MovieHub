@@ -23,7 +23,7 @@ const Movie = ({ movie, showRating = true }) => {
           {showRating ? (
             <div className="flex flex-row justify-center items-center text-orange-400">
               <AiFillStar />
-              <p className="text-xs md:text-base font-bold">{movie.averageRating} </p>
+              <p className="text-xs md:text-base font-bold">{movie.averageRating?.toFixed(2)} </p>
             </div>
           ) : (
             <div className="primary-chip px-2 py-1 rounded-full">
